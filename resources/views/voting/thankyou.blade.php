@@ -1,0 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
+<h2>Thank you for voting!</h2>
+<p>Your vote has been recorded successfully.</p>
+@endsection

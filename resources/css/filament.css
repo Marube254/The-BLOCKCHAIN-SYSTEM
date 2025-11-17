@@ -1,0 +1,184 @@
+/* ===========================================================
+   🎓 IUEA Custom Filament Theme
+   =========================================================== */
+
+/* === Color Variables === */
+:root {
+    --iuea-maroon: #800000;
+    --iuea-maroon-light: #B22222;
+    --iuea-gray: #000000;
+    --iuea-gray-light: #000000;
+    --iuea-white: #FFFFFF;
+    --iuea-shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* ===========================================================
+   LIGHT MODE
+   =========================================================== */
+
+/* === Sidebar === */
+.filament-sidebar {
+    background-color: var(--iuea-maroon);
+    color: var(--iuea-white);
+    border-right: 1px solid var(--iuea-gray);
+    box-shadow: 2px 0 8px var(--iuea-shadow);
+}
+
+.filament-sidebar a,
+.filament-sidebar .fi-sidebar-item-label,
+.filament-sidebar .fi-sidebar-item-icon {
+    color: var(--iuea-white);
+    transition: all 0.2s ease-in-out;
+}
+
+.filament-sidebar a:hover,
+.filament-sidebar a[aria-current="page"] {
+    background-color: var(--iuea-gray);
+    color: var(--iuea-white);
+}
+
+/* === Top Navigation Bar === */
+.filament-topbar {
+    background-color: var(--iuea-maroon);
+    color: var(--iuea-white);
+    border-bottom: 1px solid var(--iuea-gray-light);
+    box-shadow: 0 2px 8px var(--iuea-shadow);
+}
+
+.filament-topbar button,
+.filament-topbar a {
+    color: var(--iuea-maroon-light);
+}
+
+/* === Brand / Logo === */
+.filament-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--iuea-gray-light);
+}
+
+.filament-sidebar-header img {
+    height: 50px;
+    width: auto;
+    margin-right: 8px;
+}
+
+.filament-sidebar-header span {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--iuea-white);
+}
+
+/* === Main Content === */
+.filament-main {
+    background-color: var(--iuea-white);
+    color: #000000;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* === Widgets Styling === */
+.filament-stats-overview-widget {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.filament-stats-overview-widget .fi-stat {
+    background-color: var(--iuea-white);
+    border: 1px solid var(--iuea-gray-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px var(--iuea-shadow);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+.filament-stats-overview-widget .fi-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px var(--iuea-shadow);
+}
+
+.filament-stats-overview-widget .fi-stat .fi-stat-label {
+    color: var(--iuea-gray);
+    font-weight: 600;
+}
+
+.filament-stats-overview-widget .fi-stat .fi-stat-value {
+    color: var(--iuea-maroon);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.filament-stats-overview-widget .fi-stat .fi-stat-description {
+    color: var(--iuea-gray-light);
+    font-size: 0.9rem;
+}
+
+/* === Cards & Tables === */
+.filament-card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px var(--iuea-shadow);
+    border: 1px solid var(--iuea-gray-light);
+}
+
+.filament-tables-table {
+    border: 1px solid var(--iuea-gray-light);
+    border-radius: 0.75rem;
+}
+
+/* === Buttons === */
+button,
+.fi-btn {
+    border-radius: 0.5rem !important;
+    transition: background-color 0.2s ease-in-out, transform 0.2s;
+}
+
+button:hover,
+.fi-btn:hover {
+    transform: scale(1.03);
+}
+
+/* ===========================================================
+   DARK MODE
+   =========================================================== */
+[data-theme="dark"] {
+    --iuea-gray: #000000;
+    --iuea-gray-light: #000000;
+}
+
+[data-theme="dark"] .filament-main,
+[data-theme="dark"] .filament-app-layout,
+[data-theme="dark"] .filament-main-content {
+    background-color: #000000 !important;
+    color: var(--iuea-white) !important;
+}
+
+[data-theme="dark"] .filament-stats-overview-widget .fi-stat {
+    background-color: #1a1a1a !important;
+    border: 1px solid #000000 !important;
+    color: var(--iuea-white);
+}
+
+[data-theme="dark"] .filament-stats-overview-widget .fi-stat .fi-stat-label,
+[data-theme="dark"] .filament-stats-overview-widget .fi-stat .fi-stat-description {
+    color: #cccccc !important;
+}
+
+[data-theme="dark"] .filament-stats-overview-widget .fi-stat .fi-stat-value {
+    color: var(--iuea-maroon) !important;
+}
+
+[data-theme="dark"] .filament-card,
+[data-theme="dark"] .filament-tables-table {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] button,
+[data-theme="dark"] .fi-btn {
+    background-color: #222222 !important;
+    color: var(--iuea-white) !important;
+}
