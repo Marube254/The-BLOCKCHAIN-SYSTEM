@@ -1,6 +1,8 @@
 <x-filament::page>
 
-    <h2 class="text-2xl font-bold mb-4">Cast Vote for {{ $voter->full_name }}</h2>
+    <h2 class="text-2xl font-bold mb-4">
+        Cast Vote for {{ $voter->full_name }}
+    </h2>
 
     @if ($hasVoted)
         <div class="p-4 bg-green-200 rounded mb-4">
@@ -15,6 +17,7 @@
                 <h3 class="font-bold text-xl mb-4">{{ $sector }}</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
                     @foreach ($candidates as $candidate)
                         <label class="flex items-center space-x-3 border p-3 rounded cursor-pointer">
 
@@ -32,9 +35,9 @@
                             >
 
                             <span class="font-medium">{{ $candidate['name'] }}</span>
-
                         </label>
                     @endforeach
+
                 </div>
             </div>
         @endforeach
@@ -45,6 +48,7 @@
         >
             Submit Vote
         </button>
+
     </form>
 
 </x-filament::page>

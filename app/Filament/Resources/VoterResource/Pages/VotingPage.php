@@ -17,7 +17,7 @@ class VotingPage extends Page
     public array $candidatesBySector = [];
     public array $selectedVotes = [];
     public bool $hasVoted = false;
-    public $fingerprint = null;
+    public ?string $fingerprint = null;
 
     protected $listeners = ['setFingerprint'];
 
@@ -26,6 +26,7 @@ class VotingPage extends Page
         $this->voter = Voter::findOrFail($record);
         $this->hasVoted = $this->voter->has_voted;
 
+        // Load candidates grouped by sector
         $this->candidatesBySector = Candidate::all()
             ->groupBy('sector')
             ->map(fn ($group) =>
@@ -37,10 +38,11 @@ class VotingPage extends Page
             )
             ->toArray();
 
+        // Pre-fill previously voted choices
         if ($this->hasVoted) {
-            $previous = Vote::where('voter_id', $this->voter->id)->get();
+            $previousVotes = Vote::where('voter_id', $this->voter->id)->get();
 
-            foreach ($previous as $vote) {
+            foreach ($previousVotes as $vote) {
                 $this->selectedVotes[$vote->sector] = $vote->candidate_id;
             }
         }
@@ -53,25 +55,33 @@ class VotingPage extends Page
             return;
         }
 
-        // Temporary fallback since fingerprint not enabled yet
+        // Fingerprint fallback (for now)
         if (!$this->fingerprint) {
             $this->fingerprint = 'offline-fingerprint-placeholder';
         }
 
+        // Save each sector vote
         foreach ($this->selectedVotes as $sector => $candidateId) {
             Vote::updateOrCreate(
-                ['voter_id' => $this->voter->id, 'sector' => $sector],
-                ['candidate_id' => $candidateId]
+                [
+                    'voter_id' => $this->voter->id,
+                    'sector' => $sector,
+                ],
+                [
+                    'candidate_id' => $candidateId,
+                ]
             );
         }
 
+        // Mark voter as done
         $this->voter->has_voted = true;
         $this->voter->save();
         $this->hasVoted = true;
 
         session()->flash('success', 'Vote submitted successfully!');
 
-        return redirect()->route('filament.resources.voters.index');
+        // Correct Filament redirect
+        return redirect()->to(VoterResource::getUrl('index'));
     }
 
     public function setFingerprint($template)
