@@ -23,6 +23,7 @@ class Voter extends Authenticatable
         'password',           // added for password login
         'fingerprint_data',   // already present, used for fingerprint login
         'registered_at',
+        'has_voted',
         //'metadata',
     ];
 

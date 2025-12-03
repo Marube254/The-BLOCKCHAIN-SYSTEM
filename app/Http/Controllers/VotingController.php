@@ -4,58 +4,90 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Voter;
-use App\Models\Vote;
 use App\Models\Candidate;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Vote;
 
 class VotingController extends Controller
 {
-    // Show voting page
-    public function index()
+    // -------------------------------
+    // 1. Show the voting screen
+    // -------------------------------
+    public function showVotingInterface()
     {
-        $voter = Auth::user(); // Fingerprint-logged-in voter
-        $sectors = Candidate::select('sector')->distinct()->pluck('sector');
-
-        // Group candidates by sector
-        $candidates = Candidate::all()->groupBy('sector');
-
-        return view('voting.index', compact('voter', 'sectors', 'candidates'));
+        return view('voting.vote');
     }
 
-    // Submit votes
-    public function submit(Request $request)
+    // -------------------------------
+    // 2. Identify voter by voter ID
+    // -------------------------------
+    public function identifyVoter(Request $request)
     {
         $request->validate([
-            'votes' => 'required|array', // votes[sector] = candidate_id
-            'fingerprint_data' => 'required|string',
+            'voter_id' => 'required|string'
         ]);
 
-        $voter = Auth::user();
+        $voter = Voter::where('voter_id', $request->voter_id)->first();
 
-        // Verify fingerprint again
-        if ($voter->fingerprint_data !== $request->fingerprint_data) {
-            return back()->withErrors(['fingerprint' => 'Fingerprint does not match!']);
+        if (!$voter) {
+            return response()->json(['error' => 'No voter found with this ID'], 404);
+        }
+
+        if ($voter->has_voted) {
+            return response()->json(['error' => 'This voter has already voted'], 403);
+        }
+
+        // Store in session
+        session(['current_voter' => $voter->id]);
+
+        return response()->json(['success' => true, 'voter' => $voter]);
+    }
+
+    // -------------------------------
+    // 3. Submit vote with fingerprint
+    // -------------------------------
+    public function submitVote(Request $request)
+    {
+        $request->validate([
+            'fingerprint_data' => 'required|string',
+            'votes' => 'required|array'
+        ]);
+
+        $voterId = session('current_voter');
+
+        if (!$voterId) {
+            return response()->json(['error' => 'Session expired'], 401);
+        }
+
+        $voter = Voter::findOrFail($voterId);
+
+        // FIRST TIME → save fingerprint
+        if (!$voter->fingerprint_hash) {
+            $voter->update([
+                'fingerprint_hash' => $request->fingerprint_data
+            ]);
+        } else {
+            // MATCH FINGERPRINT
+            if ($voter->fingerprint_hash !== $request->fingerprint_data) {
+                return response()->json([
+                    'error' => 'Fingerprint does not match our records'
+                ], 422);
+            }
         }
 
         // Save votes
-        foreach ($request->votes as $sector => $candidateId) {
+        foreach ($request->votes as $position => $candidateId) {
             Vote::create([
                 'voter_id' => $voter->id,
                 'candidate_id' => $candidateId,
-                'sector' => $sector,
+                'position' => $position,
             ]);
         }
 
-        // Mark voter as voted
-        $voter->has_voted = true;
-        $voter->save();
+        // Mark voted
+        $voter->update(['has_voted' => true]);
 
-        return redirect()->route('voting.thankyou');
-    }
+        session()->forget('current_voter');
 
-    // Thank you page after voting
-    public function thankyou()
-    {
-        return view('voting.thankyou');
+        return response()->json(['success' => true]);
     }
 }

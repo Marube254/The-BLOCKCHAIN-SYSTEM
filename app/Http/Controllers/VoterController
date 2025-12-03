@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Voter;
+
+class VoterController extends Controller
+{
+    // ------------------------------------------------------
+    // SEARCH VOTERS BY VOTER ID (LIVE SEARCH)
+    // ------------------------------------------------------
+    public function search(Request $request)
+    {
+        $query = $request->q;
+
+        $voters = Voter::where('voter_id', 'LIKE', "%$query%")
+                        ->limit(10)
+                        ->get(['name', 'voter_id']);
+
+        return response()->json($voters);
+    }
+
+
+    // ------------------------------------------------------
+    // REGISTER NEW VOTER (AJAX)
+    // ------------------------------------------------------
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'voter_id' => 'required|unique:voters,voter_id'
+        ]);
+
+        $voter = Voter::create([
+            'name' => $request->name,
+            'voter_id' => $request->voter_id,
+            'has_voted' => false
+        ]);
+
+        return response()->json([
+            'message' => 'Voter registered successfully',
+            'voter' => $voter
+        ]);
+    }
+}
