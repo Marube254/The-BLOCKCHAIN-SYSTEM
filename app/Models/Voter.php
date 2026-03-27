@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; // <- change here
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\VoterResetPasswordNotification;
 
 class Voter extends Authenticatable
 {
@@ -20,10 +21,12 @@ class Voter extends Authenticatable
         'program',
         'year_of_study',
         'status',
-        'password',           // added for password login
-        'fingerprint_data',   // already present, used for fingerprint login
+        'password',
+        'fingerprint_data',
+        'fingerprint_hash',
         'registered_at',
         'has_voted',
+        'remember_token',
         //'metadata',
     ];
 
@@ -46,5 +49,26 @@ class Voter extends Authenticatable
     public function votes()
     {
         return $this->hasMany(Vote::class);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new VoterResetPasswordNotification($token));
+    }
+
+    /**
+     * Get the email address for password resets.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->email; // Use email for password reset
     }
 }

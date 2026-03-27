@@ -6,7 +6,7 @@ use App\Models\Candidate;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class CandidateStats extends StatsOverviewWidget
+class TotalCandidatesStats extends StatsOverviewWidget
 {
     protected static ?string $pollingInterval = '10s';
 

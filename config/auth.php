@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'voter' => [
+            'driver' => 'session',
+            'provider' => 'voters',
+        ],
     ],
 
     /*
@@ -63,6 +67,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'voters' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Voter::class,
         ],
 
         // 'users' => [
@@ -96,6 +104,12 @@ return [
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
+        ],
+        'voters' => [
+            'provider' => 'voters',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 10, // Reduced to 10 seconds for testing
         ],
     ],
 

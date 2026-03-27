@@ -49,6 +49,28 @@ Route::post('/vote/submit', [VotingController::class, 'submitVote'])->name('voti
 // Step 6: Thank you page after successful vote
 Route::get('/vote/thankyou', [VotingController::class, 'thankyou'])->name('voting.thankyou');
 
+// ---------------------------
+// Voter Authentication Routes (New System)
+// ---------------------------
+Route::prefix('voter')->name('voter.')->group(function () {
+    // Public routes
+    Route::middleware('guest:voter')->group(function () {
+        Route::get('auth', [VoterAuthController::class, 'showAuthForm'])->name('auth');
+        Route::post('auth/register', [VoterAuthController::class, 'register'])->name('register');
+        Route::post('auth/login', [VoterAuthController::class, 'login'])->name('login');
+        Route::post('auth/send-reset-link', [VoterAuthController::class, 'sendResetLink'])->name('send-reset-link');
+        Route::get('auth/reset-password/{token}', [VoterAuthController::class, 'showResetForm'])->name('show-reset-form');
+        Route::post('auth/reset-password', [VoterAuthController::class, 'resetPassword'])->name('reset-password');
+    });
+
+    // Protected routes (requires voter authentication)
+    Route::middleware('auth:voter')->group(function () {
+        Route::get('voting-page', [VoterAuthController::class, 'showVotingPage'])->name('voting');
+        Route::post('submit-vote', [VoterAuthController::class, 'submitVote'])->name('submit-vote');
+        Route::post('logout', [VoterAuthController::class, 'logout'])->name('logout');
+    });
+});
+
 
 
 Route::get('/voters/search', [VotingController::class, 'search']);

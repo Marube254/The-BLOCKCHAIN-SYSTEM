@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(app_path('Filament/Widgets'), 'App\\Filament\\Widgets')
             ->widgets([
-                \App\Filament\Widgets\CandidateStats::class,
+                \App\Filament\Widgets\TotalCandidatesStats::class,
                 \App\Filament\Widgets\SectorStats::class,
             ])
             ->middleware([
