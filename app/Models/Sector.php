@@ -9,21 +9,21 @@ class Sector extends Model
 {
     use HasFactory;
 
+    protected $table = 'sectors';
+
     protected $fillable = [
-        'sector_name',
         'sector_code',
+        'name',
         'description',
-        'max_candidates',
+        'is_active'
     ];
 
-    // Relationships
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     public function candidates()
     {
-        return $this->hasMany(Candidate::class);
-    }
-
-    public function votes()
-    {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Candidate::class, 'sector', 'sector_code');
     }
 }

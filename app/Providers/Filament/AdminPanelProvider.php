@@ -24,34 +24,21 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            
-            // Set logo and title
-            ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('38px')
-            ->brandName('IUEA Voting System')
-            //->topbar(view: 'vendor.filament.components.topbar')
-
-
             ->login()
             ->colors([
-                'primary' => '#800000',
-                'secondary' => '#000000',
-                'success' => '#198754',
+                'primary' => '#8B0000',
                 'danger' => '#dc2626',
+                'success' => '#10b981',
                 'warning' => '#f59e0b',
-                'info' => '#2563eb',
-                'gray' => '#9ca3af',
+                'gray' => '#6b7280',
             ])
-            // Make sure discoverResources/Pages/Widgets have both arguments (path + namespace)
-            ->discoverResources(app_path('Filament/Resources'), 'App\\Filament\\Resources')
-            ->discoverPages(app_path('Filament/Pages'), 'App\\Filament\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
-            ])
-            ->discoverWidgets(app_path('Filament/Widgets'), 'App\\Filament\\Widgets')
-            ->widgets([
-                \App\Filament\Widgets\TotalCandidatesStats::class,
-                \App\Filament\Widgets\SectorStats::class,
+            ->font('Inter')
+            ->brandName('IUEA Voting System')
+            ->brandLogo(asset('images/iuea.jfif'))
+            ->favicon(asset('images/favicon.ico'))
+            ->authGuard('web')
+            ->authMiddleware([
+                Authenticate::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -61,11 +48,16 @@ class AdminPanelProvider extends PanelProvider
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class,
+            ->discoverResources(app_path('Filament/Resources'), 'App\\Filament\\Resources')
+            ->discoverPages(app_path('Filament/Pages'), 'App\\Filament\\Pages')
+            ->pages([
+                Pages\Dashboard::class,
+            ])
+            ->discoverWidgets(app_path('Filament/Widgets'), 'App\\Filament\\Widgets')
+            ->widgets([
+                \App\Filament\Widgets\TotalCandidatesStats::class,
+                \App\Filament\Widgets\SectorStats::class,
             ]);
     }
 }

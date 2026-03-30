@@ -2,21 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
+    use HasFactory;
+
+    protected $table = 'votes';
+
     protected $fillable = [
         'voter_id',
         'candidate_id',
         'sector',
+        'blockchain_hash',
+        'previous_hash',
+        'block_index',
         'confirmed_at',
-       // 'metadata',
+        'ip_address',
+        'user_agent',
+        'voted_at'
     ];
 
     protected $casts = [
-       // 'metadata' => 'array',
         'confirmed_at' => 'datetime',
+        'voted_at' => 'datetime',
     ];
 
     public function voter()

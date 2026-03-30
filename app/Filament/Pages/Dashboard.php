@@ -7,18 +7,19 @@ use Filament\Actions\Action;
 use App\Filament\Widgets\VoterStats;
 use App\Filament\Widgets\FacultyChart;
 use App\Filament\Widgets\VotingProgress;
+use App\Filament\Widgets\RecentVoters;
+use App\Filament\Widgets\ElectionResults;
 
 class Dashboard extends BaseDashboard
 {
-    /**
-     * Define dashboard widgets.
-     */
     public function getWidgets(): array
     {
         return [
-            //VoterStats::class,
-           // FacultyChart::class,
-            // VotingProgress::class,
+            VoterStats::class,
+            FacultyChart::class,
+            VotingProgress::class,
+            RecentVoters::class,
+            ElectionResults::class,
         ];
     }
 

@@ -2,73 +2,50 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\VoterResetPasswordNotification;
 
 class Voter extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $table = 'voters';
 
     protected $fillable = [
-        'voter_id',
         'first_name',
         'last_name',
+        'voter_id',
         'email',
+        'password',
+        'has_voted',
+        'voted_at',
+        'fingerprint',
         'faculty',
         'faculty_code',
         'program',
-        'year_of_study',
-        'status',
-        'password',
-        'fingerprint_data',
-        'fingerprint_hash',
-        'registered_at',
-        'has_voted',
-        'remember_token',
-        //'metadata',
+        'year_of_study'
     ];
 
     protected $hidden = [
         'password',
-        'fingerprint_data',
+        'remember_token',
     ];
 
     protected $casts = [
-        //'metadata' => 'array',
-        'registered_at' => 'datetime',
+        'has_voted' => 'boolean',
+        'voted_at' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
 
-    // Relationships
-    public function faculty()
+    public function getFullNameAttribute()
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function votes()
     {
         return $this->hasMany(Vote::class);
-    }
-
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new VoterResetPasswordNotification($token));
-    }
-
-    /**
-     * Get the email address for password resets.
-     *
-     * @return string
-     */
-    public function getEmailForPasswordReset()
-    {
-        return $this->email; // Use email for password reset
     }
 }

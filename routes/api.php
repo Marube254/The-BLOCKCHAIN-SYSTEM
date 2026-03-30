@@ -1,19 +1,19 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\VoteController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::get('/test', function () {
+    return response()->json(['status' => 'API working']);
+});
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/register', [VoteController::class, 'register']);
+Route::post('/login', [VoteController::class, 'login']);
+Route::post('/forgot-password', [VoteController::class, 'forgotPassword']);
+Route::post('/reset-password', [VoteController::class, 'resetPassword']);
+Route::get('/candidates', [VoteController::class, 'getCandidates']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/vote', [VoteController::class, 'castVote']);
+    Route::get('/user', [VoteController::class, 'getUser']);
+    Route::post('/logout', [VoteController::class, 'logout']);
 });

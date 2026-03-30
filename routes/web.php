@@ -24,6 +24,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/voting.html', function () {
+    return view('vote');
+});
+
 // ---------------------------
 // Voter Authentication Routes
 // ---------------------------

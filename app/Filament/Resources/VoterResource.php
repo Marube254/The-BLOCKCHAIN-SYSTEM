@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class VoterResource extends Resource
 {
@@ -60,34 +61,54 @@ class VoterResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('voter_id')->sortable()->searchable(),
-                TextColumn::make('first_name')->sortable()->searchable(),
-                TextColumn::make('last_name')->sortable()->searchable(),
-                TextColumn::make('faculty')->sortable()->searchable(),
-
-                IconColumn::make('has_voted')
-                    ->label('Voted?')
-                    ->boolean()
+                Tables\Columns\TextColumn::make('voter_id')
+                    ->label('Voter ID')
+                    ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('full_name')
+                    ->label('Full Name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('faculty')
+                    ->label('Faculty'),
+                Tables\Columns\BooleanColumn::make('has_voted')
+                    ->label('Voted')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-clock')
+                    ->trueColor('success')
+                    ->falseColor('warning'),
+                Tables\Columns\TextColumn::make('voted_at')
+                    ->label('Voted At')
+                    ->dateTime('d M Y H:i'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Registered')
+                    ->dateTime('d M Y'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('faculty')->options([
-                    'Business' => 'Business',
-                    'Engineering' => 'Engineering',
-                    'Science and Technology' => 'Science and Technology',
-                ]),
-                Tables\Filters\TernaryFilter::make('has_voted')->label('Voted'),
+                Tables\Filters\SelectFilter::make('faculty')
+                    ->options(Voter::distinct()->pluck('faculty', 'faculty')),
+                Tables\Filters\Filter::make('has_voted')
+                    ->label('Voted')
+                    ->query(fn (Builder $query): Builder => $query->where('has_voted', true)),
+                Tables\Filters\Filter::make('not_voted')
+                    ->label('Not Voted')
+                    ->query(fn (Builder $query): Builder => $query->where('has_voted', false)),
             ])
             ->actions([
+                Tables\Actions\Action::make('vote')
+                    ->label('Vote')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('primary')
+                    ->url(fn (Voter $record): string => VoterResource::getUrl('voting', ['record' => $record])),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('vote')
-                    ->icon('heroicon-o-finger-print')
-                    ->color('success')
-                    ->label('Vote')
-                    ->url(fn ($record) => Pages\VotingPage::getUrl(['record' => $record])),
             ])
-            ->bulkActions([Tables\Actions\DeleteBulkAction::make()]);
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
     }
 
     public static function getPages(): array

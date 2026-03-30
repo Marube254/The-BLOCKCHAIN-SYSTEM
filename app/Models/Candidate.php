@@ -9,6 +9,8 @@ class Candidate extends Model
 {
     use HasFactory;
 
+    protected $table = 'candidates';
+
     protected $fillable = [
         'candidate_id',
         'first_name',
@@ -17,7 +19,6 @@ class Candidate extends Model
         'photo_filename',
         'faculty',
         'faculty_code',
-        //'department',
         'program',
         'year_of_study',
         'sector',
@@ -27,24 +28,16 @@ class Candidate extends Model
         'bio',
         'contact_email',
         'status',
-        'registered_at',
-       // 'metadata',
+        'registered_at'
     ];
 
     protected $casts = [
-       // 'metadata' => 'array',
-        'registered_at' => 'datetime',
+        'status' => 'string',
     ];
 
-    // Relationships
     public function sector()
     {
-        return $this->belongsTo(Sector::class);
-    }
-
-    public function faculty()
-    {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(Sector::class, 'sector', 'sector_code');
     }
 
     public function votes()
