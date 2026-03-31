@@ -11,22 +11,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class VoteController extends Controller
 {
     public function getCandidates()
     {
-        $candidates = Candidate::where('status', 'active')->get()->groupBy('sector');
+        $candidates = Candidate::where('status', 'active')
+            ->select('id', 'display_name', 'sector', 'photo_filename', 'photo_path', 'bio', 'manifesto')
+            ->get()
+            ->groupBy('sector');
         
         $formatted = [];
-        foreach ($candidates as $sector => $list) {
-            $formatted[$sector] = $list->map(function($c) {
+        foreach ($candidates as $sector => $candidateList) {
+            $formatted[$sector] = $candidateList->map(function($candidate) {
+                $photoUrl = null;
+                if ($candidate->photo_filename) {
+                    $photoUrl = asset('storage/' . $candidate->photo_filename);
+                } elseif ($candidate->photo_path) {
+                    $photoUrl = Storage::url($candidate->photo_path);
+                }
+                
                 return [
-                    'id' => $c->id,
-                    'display_name' => $c->display_name,
-                    'sector' => $c->sector,
-                    'photo_filename' => $c->photo_filename,
+                    'id' => $candidate->id,
+                    'display_name' => $candidate->display_name,
+                    'sector' => $candidate->sector,
+                    'photo_url' => $photoUrl,
+                    'bio' => $candidate->bio,
+                    'manifesto' => $candidate->manifesto
                 ];
             });
         }

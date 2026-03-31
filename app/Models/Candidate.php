@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Candidate extends Model
 {
@@ -17,6 +18,7 @@ class Candidate extends Model
         'last_name',
         'display_name',
         'photo_filename',
+        'photo_path',
         'faculty',
         'faculty_code',
         'program',
@@ -37,11 +39,23 @@ class Candidate extends Model
 
     public function sector()
     {
-        return $this->belongsTo(Sector::class, 'sector', 'sector_code');
+        return $this->belongsTo(Sector::class, 'sector', 'sector_name');
     }
 
     public function votes()
     {
         return $this->hasMany(Vote::class);
+    }
+
+    // Get photo URL
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo_path) {
+            return Storage::url($this->photo_path);
+        }
+        if ($this->photo_filename) {
+            return asset('storage/' . $this->photo_filename);
+        }
+        return null;
     }
 }

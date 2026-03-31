@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IUEA Voting System | Blockchain-Powered Elections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .vote-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .vote-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -12px rgba(139, 0, 0, 0.2);
+        }
+        
+        .selected-candidate {
+            border: 2px solid #8B0000;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+            box-shadow: 0 10px 20px -5px rgba(139, 0, 0, 0.2);
+        }
+        
+        .selected-candidate .candidate-badge {
+            background: #8B0000;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(139, 0, 0, 0.4);
+        }
+        
+        .sector-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sector-header {
+            background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%);
+            padding: 1rem 1.5rem;
+        }
+        
+        .candidate-photo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #8B0000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .vote-card:hover .candidate-photo {
+            transform: scale(1.05);
+        }
+        
+        .toast {
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .blockchain-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8B0000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<div id="app">
+    <!-- AUTH PAGE -->
+    <div id="authPage" class="min-h-screen flex items-center justify-center px-4">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-[#8B0000] rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <i class="fas fa-university text-white text-3xl"></i>
+                </div>
+                <h2 class="mt-4 text-3xl font-bold text-gray-800">IUEA Voting System</h2>
+                <p class="text-gray-500 text-sm mt-2">Blockchain-Powered Student Elections 2025</p>
+                <div class="mt-3 inline-flex items-center gap-2 bg-purple-100 px-4 py-2 rounded-full">
+                    <i class="fas fa-link text-purple-600 text-xs"></i>
+                    <span class="text-xs text-purple-600 font-medium">Blockchain Verified • Immutable • Transparent</span>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-8 border-b">
+                <button id="showLoginBtn" class="flex-1 py-2 font-semibold text-[#8B0000] border-b-2 border-[#8B0000] transition-all">Login</button>
+                <button id="showRegisterBtn" class="flex-1 py-2 font-semibold text-gray-500 hover:text-gray-700 transition-all">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="mt-6 space-y-4">
+                <input type="text" id="loginVoterId" placeholder="Admission Number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000] focus:border-[#8B0000] transition">
+                <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000] focus:border-[#8B0000] transition">
+                <div class="text-right">
+                    <button id="forgotPasswordBtn" class="text-sm text-[#8B0000] hover:underline">Forgot Password?</button>
+                </div>
+                <button id="loginSubmitBtn" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">Login to Vote</button>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="mt-6 space-y-4 hidden">
+                <input type="text" id="regFirstName" placeholder="First Name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <input type="text" id="regLastName" placeholder="Last Name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <input type="text" id="regVoterId" placeholder="Admission Number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <input type="password" id="regPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000]">
+                <button id="registerSubmitBtn" class="w-full btn-primary text-white py-3 rounded-lg font-semibold">Create Account</button>
+            </div>
+
+            <!-- FORGOT PASSWORD FORM -->
+            <div id="forgotPasswordForm" class="mt-6 space-y-4 hidden">
+                <input type="email" id="resetEmail" placeholder="Enter your email address" class="w-full px-4 py-3 border border-gray-300 rounded-lg">
+                <button id="sendResetLinkBtn" class="w-full btn-primary text-white py-3 rounded-lg">Send Reset Link</button>
+                <button id="backToLoginFromReset" class="w-full text-gray-500 py-2 text-sm hover:text-[#8B0000]">Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOTING PAGE -->
+    <div id="votingPage" class="hidden max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 pb-4 border-b">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">IUEA <span class="text-[#8B0000]">VoteHub</span></h1>
+                <p class="text-sm text-gray-500 mt-1">Blockchain-Powered Student Elections 2025</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="bg-gray-100 px-5 py-2 rounded-full flex items-center gap-2">
+                    <i class="fas fa-user-circle text-[#8B0000] text-xl"></i>
+                    <span id="voterName" class="text-sm font-medium text-gray-700">Loading...</span>
+                </div>
+                <button id="logoutBtn" class="text-[#8B0000] hover:bg-red-50 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Blockchain Status -->
+        <div class="blockchain-badge rounded-xl p-4 mb-8 flex items-center justify-between shadow-lg">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-link text-white text-xl"></i>
+                <div>
+                    <span class="text-white font-semibold">Blockchain Verified Voting</span>
+                    <p class="text-white text-xs opacity-90">Each vote is cryptographically hashed and immutable</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-green-300"></i>
+                <span class="text-white text-sm">Your vote is secure</span>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="flex justify-center items-center py-20">
+            <div class="loading-spinner"></div>
+            <p class="ml-3 text-gray-500">Loading candidates...</p>
+        </div>
+
+        <!-- Candidates Grid -->
+        <div id="candidatesGrid" class="grid grid-cols-1 gap-8"></div>
+
+        <!-- Vote Summary -->
+        <div id="voteSummarySection" class="mt-10 bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hidden">
+            <h3 class="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-ballot-check text-[#8B0000]"></i>
+                Your Vote Summary
+            </h3>
+            <div id="voteSummary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            <button id="castVoteBtn" class="mt-6 w-full btn-primary text-white py-3 rounded-xl font-semibold text-lg transition-all">
+                <i class="fas fa-vote-yea mr-2"></i> Cast Vote Securely
+            </button>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION PAGE -->
+    <div id="confirmationPage" class="hidden min-h-screen flex items-center justify-center px-4">
+        <div class="max-w-lg w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <i class="fas fa-check-circle text-green-600 text-5xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold mt-6 text-gray-800">Vote Successfully Recorded!</h2>
+            <p class="text-gray-500 mt-2">Your vote has been secured on the blockchain</p>
+            <div class="bg-gray-50 rounded-lg p-4 mt-6 text-left">
+                <p class="text-sm font-mono break-all"><strong>Transaction Hash:</strong> <span id="txHash" class="text-xs"></span></p>
+                <p class="text-sm mt-2"><strong>Timestamp:</strong> <span id="txTime"></span></p>
+            </div>
+            <button id="newVoteBtn" class="mt-6 btn-primary text-white px-8 py-3 rounded-xl font-semibold">Return Home</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer" class="fixed bottom-5 right-5 z-50"></div>
+
+<script>
+    // Initialize EmailJS
+    emailjs.init("AKON5I-qdSpvPbsaj");
+    
+    const API_BASE = '/api';
+    let authToken = localStorage.getItem('auth_token');
+    let currentVoter = null;
+    let candidates = {};
+    let selectedVotes = {};
+
+    // Sector descriptions matching your admin panel
+    const sectorDescriptions = {
+        'Guild President': {
+            code: 'IUEA-GP',
+            description: 'Represents the student body at the university level. Advocates for student rights, chairs the student council, and serves as the primary liaison between students and university administration.'
+        },
+        'Vice President': {
+            code: 'IUEA-VP',
+            description: 'Assists the Guild President in all duties. Takes over responsibilities when the President is unavailable and coordinates student welfare programs.'
+        },
+        'General Secretary': {
+            code: 'IUEA-GS',
+            description: 'Handles guild records, meeting minutes, official correspondence, and maintains communication between the student council and the student body.'
+        },
+        'Finance Minister': {
+            code: 'IUEA-FM',
+            description: 'Manages guild funds, prepares budgets, oversees financial transactions, and ensures transparency in all financial matters.'
+        },
+        'Sports Minister': {
+            code: 'IUEA-SM',
+            description: 'Oversees all student sports activities, organizes tournaments, manages sports facilities, and promotes physical fitness among students.'
+        }
+    };
+
+    function showToast(message, isError = false) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast bg-white rounded-lg shadow-xl border-l-8 p-4 mb-3 min-w-[320px]`;
+        toast.style.borderLeftColor = isError ? '#dc2626' : '#8B0000';
+        toast.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="fas ${isError ? 'fa-exclamation-triangle text-red-500' : 'fa-check-circle text-[#8B0000]'}"></i>
+                <p class="text-sm text-gray-700">${message}</p>
+                <button class="ml-auto text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    async function apiCall(endpoint, method = 'GET', data = null) {
+        const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        
+        const response = await fetch(`${API_BASE}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : null });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Request failed');
+        }
+        return response.json();
+    }
+
+    async function loadCandidates() {
+        document.getElementById('loadingSpinner').style.display = 'flex';
+        try {
+            candidates = await apiCall('/candidates');
+            selectedVotes = {};
+            renderCandidates();
+            document.getElementById('loadingSpinner').style.display = 'none';
+        } catch (error) {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            showToast('Failed to load candidates', true);
+        }
+    }
+
+    function renderCandidates() {
+        const grid = document.getElementById('candidatesGrid');
+        grid.innerHTML = '';
+        
+        for (const [sector, candidateList] of Object.entries(candidates)) {
+            const sectorInfo = sectorDescriptions[sector] || { 
+                code: 'N/A', 
+                description: 'Responsible for representing student interests in this sector.' 
+            };
+            
+            const sectorDiv = document.createElement('div');
+            sectorDiv.className = 'sector-card';
+            sectorDiv.innerHTML = `
+                <div class="sector-header">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-xl text-white">${sector}</h3>
+                            <p class="text-white text-sm opacity-90 mt-1">${sectorInfo.description}</p>
+                        </div>
+                        <div class="bg-white/20 px-3 py-1 rounded-full">
+                            <span class="text-white text-xs font-mono">${sectorInfo.code}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="sector-${sector.replace(/\s/g, '')}"></div>
+                </div>
+            `;
+            grid.appendChild(sectorDiv);
+            
+            const container = document.getElementById(`sector-${sector.replace(/\s/g, '')}`);
+            candidateList.forEach(candidate => {
+                const isSelected = selectedVotes[sector] === candidate.id;
+                const photoUrl = candidate.photo_url || candidate.photo_filename ? 
+                    `/storage/${candidate.photo_filename || candidate.photo_url}` : 
+                    'https://ui-avatars.com/api/?background=8B0000&color=fff&size=80&name=' + encodeURIComponent(candidate.display_name);
+                
+                const card = document.createElement('div');
+                card.className = `vote-card rounded-xl p-5 bg-white ${isSelected ? 'selected-candidate' : 'border border-gray-200'}`;
+                card.innerHTML = `
+                    <div class="flex flex-col items-center text-center">
+                        <img src="${photoUrl}" alt="${candidate.display_name}" 
+                             class="candidate-photo mb-4" 
+                             onerror="this.src='https://ui-avatars.com/api/?background=8B0000&color=fff&size=80&name=${encodeURIComponent(candidate.display_name)}'">
+                        <h4 class="font-bold text-lg text-gray-800">${candidate.display_name}</h4>
+                        <p class="text-sm text-gray-500 mt-1">${candidate.sector || sector}</p>
+                        ${candidate.bio ? `<p class="text-xs text-gray-500 mt-2 line-clamp-2">${candidate.bio.substring(0, 80)}${candidate.bio.length > 80 ? '...' : ''}</p>` : ''}
+                        <div class="mt-4 w-full">
+                            <div class="flex items-center justify-center gap-2">
+                                <input type="radio" name="vote-${sector}" value="${candidate.id}" ${isSelected ? 'checked' : ''} class="w-5 h-5 text-[#8B0000] focus:ring-[#8B0000]">
+                                <span class="text-sm font-medium text-gray-600">Select Candidate</span>
+                            </div>
+                            ${isSelected ? '<div class="mt-2 inline-flex items-center gap-1 candidate-badge bg-[#8B0000] text-white px-3 py-1 rounded-full text-xs"><i class="fas fa-check"></i> Selected</div>' : ''}
+                        </div>
+                    </div>
+                `;
+                
+                const radio = card.querySelector('input[type="radio"]');
+                radio.onclick = (e) => {
+                    e.stopPropagation();
+                    selectedVotes[sector] = candidate.id;
+                    renderCandidates();
+                    updateSummary();
+                    showToast(`✓ Selected ${candidate.display_name} for ${sector}`);
+                };
+                
+                card.onclick = (e) => {
+                    if (e.target !== radio && !radio.contains(e.target)) {
+                        selectedVotes[sector] = candidate.id;
+                        renderCandidates();
+                        updateSummary();
+                        showToast(`✓ Selected ${candidate.display_name} for ${sector}`);
+                    }
+                };
+                
+                container.appendChild(card);
+            });
+        }
+        updateSummary();
+    }
+
+    function updateSummary() {
+        const summaryDiv = document.getElementById('voteSummary');
+        const summarySection = document.getElementById('voteSummarySection');
+        summaryDiv.innerHTML = '';
+        
+        let hasSelections = false;
+        
+        for (const [sector, candidateId] of Object.entries(selectedVotes)) {
+            let candidateName = 'Not selected';
+            if (candidates[sector]) {
+                const found = candidates[sector].find(c => c.id === candidateId);
+                if (found) candidateName = found.display_name;
+                hasSelections = true;
+            }
+            summaryDiv.innerHTML += `
+                <div class="bg-gray-50 p-3 rounded-lg border-l-4 border-[#8B0000]">
+                    <p class="font-semibold text-gray-700 text-sm">${sector}</p>
+                    <p class="text-[#8B0000] font-medium mt-1">${candidateName}</p>
+                </div>
+            `;
+        }
+        
+        summarySection.classList.toggle('hidden', !hasSelections);
+    }
+
+    async function castVote() {
+        if (!currentVoter) return showToast('Please login first', true);
+        if (currentVoter.has_voted) return showToast('You have already voted!', true);
+        
+        const votesArray = Object.entries(selectedVotes).map(([sector, candidate_id]) => ({ sector, candidate_id }));
+        
+        if (votesArray.length !== Object.keys(candidates).length) {
+            return showToast(`Please vote in all sectors. You have selected ${votesArray.length} of ${Object.keys(candidates).length}`, true);
+        }
+        
+        if (!confirm('Cast your vote? This action is irreversible and recorded on the blockchain.')) return;
+        
+        try {
+            const result = await apiCall('/vote', 'POST', { votes: votesArray });
+            
+            // Send confirmation email via EmailJS
+            const candidateNames = Object.entries(selectedVotes).map(([sector, id]) => {
+                const candidate = candidates[sector]?.find(c => c.id === id);
+                return `${sector}: ${candidate?.display_name || 'Unknown'}`;
+            }).join('\n');
+            
+            await emailjs.send('service_uixgfye', 'Confirmation Receipt', {
+                to_email: currentVoter.email,
+                to_name: currentVoter.full_name,
+                vote_summary: candidateNames,
+                transaction_hash: result.transaction_hash || 'Blockchain verified',
+                voting_date: new Date().toLocaleString(),
+                admission_number: currentVoter.voter_id
+            });
+            
+            document.getElementById('txHash').innerText = result.transaction_hash || 'Verified on blockchain';
+            document.getElementById('txTime').innerText = new Date().toLocaleString();
+            
+            showToast('Vote cast successfully! Confirmation sent to your email.');
+            document.getElementById('votingPage').classList.add('hidden');
+            document.getElementById('confirmationPage').classList.remove('hidden');
+            
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    }
+
+    async function login() {
+        const voter_id = document.getElementById('loginVoterId').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        try {
+            const result = await apiCall('/login', 'POST', { voter_id, password });
+            authToken = result.token;
+            localStorage.setItem('auth_token', authToken);
+            currentVoter = result.voter;
+            showToast(`Welcome ${currentVoter.full_name}!`);
+            await loadCandidates();
+            document.getElementById('voterName').innerText = currentVoter.full_name;
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('votingPage').classList.remove('hidden');
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    }
+
+    async function register() {
+        const first_name = document.getElementById('regFirstName').value;
+        const last_name = document.getElementById('regLastName').value;
+        const voter_id = document.getElementById('regVoterId').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const password_confirmation = document.getElementById('regConfirmPassword').value;
+        
+        if (password !== password_confirmation) return showToast('Passwords do not match', true);
+        if (password.length < 6) return showToast('Password must be at least 6 characters', true);
+        
+        try {
+            await apiCall('/register', 'POST', { first_name, last_name, voter_id, email, password, password_confirmation });
+            showToast('Registration successful! Please login.');
+            document.getElementById('showLoginBtn').click();
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    }
+
+    function logout() {
+        authToken = null;
+        localStorage.removeItem('auth_token');
+        currentVoter = null;
+        document.getElementById('authPage').classList.remove('hidden');
+        document.getElementById('votingPage').classList.add('hidden');
+        document.getElementById('confirmationPage').classList.add('hidden');
+    }
+
+    // Event Listeners
+    document.getElementById('showLoginBtn').onclick = () => {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('forgotPasswordForm').classList.add('hidden');
+        document.getElementById('showLoginBtn').classList.add('border-b-2', 'border-[#8B0000]', 'text-[#8B0000]');
+        document.getElementById('showRegisterBtn').classList.remove('border-b-2', 'border-[#8B0000]', 'text-[#8B0000]');
+    };
+    
+    document.getElementById('showRegisterBtn').onclick = () => {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        document.getElementById('forgotPasswordForm').classList.add('hidden');
+        document.getElementById('showRegisterBtn').classList.add('border-b-2', 'border-[#8B0000]', 'text-[#8B0000]');
+        document.getElementById('showLoginBtn').classList.remove('border-b-2', 'border-[#8B0000]', 'text-[#8B0000]');
+    };
+    
+    document.getElementById('forgotPasswordBtn').onclick = () => {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('forgotPasswordForm').classList.remove('hidden');
+    };
+    
+    document.getElementById('backToLoginFromReset').onclick = () => document.getElementById('showLoginBtn').click();
+    document.getElementById('loginSubmitBtn').onclick = login;
+    document.getElementById('registerSubmitBtn').onclick = register;
+    document.getElementById('castVoteBtn').onclick = castVote;
+    document.getElementById('logoutBtn').onclick = logout;
+    document.getElementById('newVoteBtn').onclick = () => {
+        document.getElementById('confirmationPage').classList.add('hidden');
+        document.getElementById('authPage').classList.remove('hidden');
+    };
+    
+    document.getElementById('sendResetLinkBtn').onclick = async () => {
+        const email = document.getElementById('resetEmail').value;
+        if (!email) return showToast('Please enter your email', true);
+        try {
+            const response = await fetch(`${API_BASE}/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+            
+            await emailjs.send('service_uixgfye', 'password_reset', {
+                to_email: email,
+                to_name: email.split('@')[0],
+                reset_link: data.reset_link,
+                message: `Click here to reset your password: ${data.reset_link}`
+            });
+            showToast('Password reset link sent to your email!');
+            document.getElementById('showLoginBtn').click();
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    };
+    
+    // Auto-login check
+    if (authToken) {
+        (async () => {
+            try {
+                currentVoter = await apiCall('/user');
+                await loadCandidates();
+                document.getElementById('voterName').innerText = currentVoter.full_name;
+                document.getElementById('authPage').classList.add('hidden');
+                document.getElementById('votingPage').classList.remove('hidden');
+            } catch { logout(); }
+        })();
+    }
+</script>
+</body>
+</html>
