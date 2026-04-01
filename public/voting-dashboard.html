@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>IUEA Voting System | Vote Dashboard</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        .bg-gradient-primary { background: linear-gradient(180deg, #8B0000 0%, #6a0000 100%) !important; }
+        .btn-primary { background-color: #8B0000 !important; border-color: #8B0000 !important; }
+        .btn-primary:hover { background-color: #6a0000 !important; }
+        .text-primary { color: #8B0000 !important; }
+        .candidate-card { transition: all 0.3s ease; cursor: pointer; }
+        .candidate-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .selected { border: 2px solid #8B0000; background: #fff5f5; }
+        .candidate-photo { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin: 0 auto 15px; border: 3px solid #8B0000; }
+        .toast { position: fixed; bottom: 20px; right: 20px; z-index: 9999; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .selected-badge { position: absolute; top: 10px; right: 10px; background: #8B0000; color: white; border-radius: 20px; padding: 2px 10px; font-size: 12px; }
+
+        .sidebar-brand {
+            background: white !important;
+            margin: 15px !important;
+            border-radius: 12px !important;
+            padding: 12px !important;
+        }
+
+        .sidebar-brand img {
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" style="background: white; margin: 15px; border-radius: 12px; padding: 10px;">
+                <img src="images/iuea-logo.png" alt="IUEA" style="height: 40px; width: auto; margin-right: 8px;">
+                <div>
+                    <div class="sidebar-brand-text" style="color: #8B0000; font-weight: bold; font-size: 14px;">
+                        
+                    </div>
+                    <div class="sidebar-brand-text" style="color: #8B0000; font-weight: bold; font-size: 12px;"></div>
+                </div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item active"><a class="nav-link" href="#"><i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Election Info</div>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-link"></i><span>Blockchain Verified</span></a></li>
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline"><button class="rounded-circle border-0" id="sidebarToggle"></button></div>
+        </ul>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3"><i class="fa fa-bars"></i></button>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="voterName">Loading...</span>
+                                <i class="fas fa-user-circle fa-2x text-gray-300"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Student Government Elections 2025</h1>
+                        <div class="badge bg-primary text-white p-2"><i class="fas fa-link mr-1"></i> Blockchain Secured</div>
+                    </div>
+
+                    <div id="loadingSpinner" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Loading candidates...</p></div>
+                    <div id="candidatesContainer"></div>
+
+                    <div id="voteSummary" class="card shadow mb-4" style="display: none;">
+                        <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Your Vote Summary</h6></div>
+                        <div class="card-body">
+                            <div id="summaryGrid" class="row"></div>
+                            <button id="castVoteBtn" class="btn btn-primary btn-block mt-3">Cast Vote Securely <i class="fas fa-arrow-right ml-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="sticky-footer bg-white"><div class="container my-auto"><div class="copyright text-center my-auto"><span>© 2025 IUEA Blockchain Voting System | Immutable • Transparent • Secure</span></div></div></footer>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        emailjs.init("AKON5I-qdSpvPbsaj");
+        const API_BASE = '/api';
+        let authToken = localStorage.getItem('auth_token');
+        let currentVoter = null;
+        let candidates = {};
+        let selectedVotes = {};
+        
+        if (!authToken) window.location.href = 'login.html';
+        
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast bg-white';
+            toast.style.borderLeft = isError ? '4px solid #dc2626' : '4px solid #8B0000';
+            toast.innerHTML = `<div class="toast-body"><i class="fas ${isError ? 'fa-exclamation-triangle text-danger' : 'fa-check-circle text-primary'} mr-2"></i>${message}<button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button></div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+        
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` };
+            const response = await fetch(`${API_BASE}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : null });
+            if (!response.ok) { const error = await response.json(); throw new Error(error.message); }
+            return response.json();
+        }
+        
+        async function loadUser() {
+            try { currentVoter = await apiCall('/user'); document.getElementById('voterName').innerText = currentVoter.full_name; }
+            catch { logout(); }
+        }
+        
+        async function loadCandidates() {
+            try { candidates = await apiCall('/candidates'); renderCandidates(); }
+            catch (error) { showToast('Failed to load candidates', true); }
+        }
+        
+        function renderCandidates() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            const container = document.getElementById('candidatesContainer');
+            container.innerHTML = '';
+            for (const [sector, list] of Object.entries(candidates)) {
+                const sectorCard = document.createElement('div'); sectorCard.className = 'card shadow mb-4';
+                sectorCard.innerHTML = `<div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">${sector}</h6></div><div class="card-body"><div class="row" id="sector-${sector.replace(/\s/g, '')}"></div></div>`;
+                container.appendChild(sectorCard);
+                const row = document.getElementById(`sector-${sector.replace(/\s/g, '')}`);
+                list.forEach(c => {
+                    const isSelected = selectedVotes[sector] === c.id;
+                    const photoUrl = c.photo_url ? c.photo_url : `https://ui-avatars.com/api/?background=8B0000&color=fff&size=100&name=${encodeURIComponent(c.display_name)}`;
+                    const col = document.createElement('div'); col.className = 'col-lg-4 col-md-6 mb-4';
+                    col.innerHTML = `<div class="card candidate-card h-100 text-center p-3 ${isSelected ? 'selected' : ''}" data-sector="${sector}" data-id="${c.id}">
+                        <div class="position-relative"><img src="${photoUrl}" class="candidate-photo" onerror="this.src='https://ui-avatars.com/api/?background=8B0000&color=fff&size=100&name=${encodeURIComponent(c.display_name)}'">${isSelected ? '<div class="selected-badge"><i class="fas fa-check"></i> Selected</div>' : ''}</div>
+                        <h5 class="mt-2">${c.display_name}</h5>
+                        <p class="text-muted small">${c.sector}</p>
+                        <div class="mt-auto"><button class="btn btn-sm btn-outline-primary select-candidate" data-sector="${sector}" data-id="${c.id}">Select Candidate</button></div>
+                    </div>`;
+                    row.appendChild(col);
+                });
+            }
+            document.querySelectorAll('.select-candidate').forEach(btn => {
+                btn.onclick = () => { selectedVotes[btn.dataset.sector] = parseInt(btn.dataset.id); renderCandidates(); updateSummary(); showToast(`Selected ${btn.closest('.card').querySelector('h5').innerText}`); };
+            });
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summaryGrid');
+            const summaryCard = document.getElementById('voteSummary');
+            summaryDiv.innerHTML = '';
+            let hasSelections = false;
+            for (const [sector, id] of Object.entries(selectedVotes)) {
+                const name = candidates[sector]?.find(c => c.id === id)?.display_name || 'Selected';
+                summaryDiv.innerHTML += `<div class="col-md-3 mb-2"><div class="card bg-light"><div class="card-body py-2"><small><strong>${sector}</strong><br>${name}</small></div></div></div>`;
+                hasSelections = true;
+            }
+            summaryCard.style.display = hasSelections ? 'block' : 'none';
+        }
+        
+        async function castVote() {
+            if (currentVoter?.has_voted) return showToast('You have already voted!', true);
+            const votesArray = Object.entries(selectedVotes).map(([sector, candidate_id]) => ({ sector, candidate_id }));
+            if (votesArray.length !== Object.keys(candidates).length) return showToast(`Please vote in all sectors. Selected ${votesArray.length} of ${Object.keys(candidates).length}`, true);
+            if (!confirm('Cast your vote? This action is irreversible and recorded on the blockchain.')) return;
+            try {
+                const result = await apiCall('/vote', 'POST', { votes: votesArray });
+                const summary = Object.entries(selectedVotes).map(([sector, id]) => `${sector}: ${candidates[sector]?.find(c => c.id === id)?.display_name}`).join('\n');
+                await emailjs.send('service_uixgfye', 'Confirmation Receipt', { to_email: currentVoter.email, to_name: currentVoter.full_name, vote_summary: summary, transaction_hash: result.transaction_hash || 'Blockchain verified', voting_date: new Date().toLocaleString(), admission_number: currentVoter.voter_id });
+                showToast('Vote cast successfully! Confirmation sent to your email.');
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            } catch (error) { showToast(error.message, true); }
+        }
+        
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
+        
+        document.getElementById('logoutBtn').onclick = logout;
+        document.getElementById('castVoteBtn').onclick = castVote;
+        
+        loadUser();
+        loadCandidates();
+    </script>
+</body>
+</html>

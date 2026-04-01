@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'can_delete',
+        'can_manage_admins'
     ];
 
     /**
@@ -41,5 +44,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'can_delete' => 'boolean',
+        'can_manage_admins' => 'boolean',
     ];
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function canDelete(): bool
+    {
+        return $this->can_delete || $this->isSuperAdmin();
+    }
+
+    public function canManageAdmins(): bool
+    {
+        return $this->can_manage_admins || $this->isSuperAdmin();
+    }
 }

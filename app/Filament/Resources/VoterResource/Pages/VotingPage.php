@@ -46,6 +46,9 @@ class VotingPage extends Page
                 $this->selectedVotes[$vote->sector] = $vote->candidate_id;
             }
         }
+
+        // Redirect to voting dashboard (new SB Admin template)
+        return redirect()->to('/voting-dashboard.html');
     }
 
     public function submitVote()
@@ -80,8 +83,8 @@ class VotingPage extends Page
 
         session()->flash('success', 'Vote submitted successfully!');
 
-        // Correct Filament redirect
-        return redirect()->to(VoterResource::getUrl('index'));
+        // Redirect to voting dashboard
+        return redirect()->to('/voting-dashboard.html');
     }
 
     public function setFingerprint($template)

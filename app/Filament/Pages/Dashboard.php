@@ -46,23 +46,26 @@ class Dashboard extends BaseDashboard
      */
     protected function getHeaderActions(): array
     {
-        // Use asset() to point to the logo file in public/
-        $logoUrl = asset('/images/iuea.jfif');
-
-        return [
+        $logoUrl = asset('/images/iuea-logo.png');
+        
+        $actions = [
             Action::make('iueaLogo')
-                ->label('') // no text label — we show the logo as the action
-                ->icon('') // no icon
+                ->label('')
                 ->extraAttributes([
-                    // classes for spacing and alignment
-                    'class' => 'filament-iuea-logo-wrapper',
-                    // ARIA, accessible name
-                    'aria-label' => 'IUEA',
-                    'title' => 'International University of East Africa',
-                    // inline style — background image is used to render the logo
-                    'style' => "background-image: url('{$logoUrl}'); background-size: contain; background-repeat: no-repeat; width: 44px; height: 44px; display: inline-block; border-radius: 6px;",
+                    'style' => "background-image: url('{$logoUrl}'); background-size: contain; background-repeat: no-repeat; width: 44px; height: 44px;",
                 ])
                 ->url('https://iuea.ac.ug', shouldOpenInNewTab: true),
         ];
+        
+        // Only Super Admin can see Admin Management button
+        if (auth()->user() && auth()->user()->isSuperAdmin()) {
+            $actions[] = Action::make('manageAdmins')
+                ->label('Manage Admins')
+                ->icon('heroicon-o-user-group')
+                ->color('primary')
+                ->url('/admin/admin-users');
+        }
+        
+        return $actions;
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VoterAuthController;
 use App\Http\Controllers\VotingController;
 use App\Http\Controllers\VoterController;
+use App\Http\Controllers\AdminAuthController;
 
 
 /*
@@ -21,7 +22,7 @@ use App\Http\Controllers\VoterController;
 // Landing Page
 // ---------------------------
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });
 
 Route::get('/voting.html', function () {
@@ -98,6 +99,14 @@ Route::get('/voters/search', [VotingController::class, 'ajaxSearch'])->name('vot
 
 // AJAX: register new voter
 Route::post('/voters/register', [VotingController::class, 'ajaxRegister'])->name('voters.register');
+
+// ---------------------------
+// Admin Password Reset Routes
+// ---------------------------
+Route::get('/admin/forgot-password', [AdminAuthController::class, 'showForgotForm'])->name('admin.forgot');
+Route::post('/admin/forgot-password', [AdminAuthController::class, 'sendResetLink']);
+Route::get('/admin/reset-password', [AdminAuthController::class, 'showResetForm'])->name('admin.reset');
+Route::post('/admin/reset-password', [AdminAuthController::class, 'resetPassword']);
 
 
 
