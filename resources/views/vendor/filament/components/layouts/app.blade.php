@@ -1,6 +1,14 @@
 @extends('filament::components.layouts.app')
 
 @push('styles')
+<link href="{{ asset('css/fingerprint.css') }}" rel="stylesheet">
+@endpush
+
+@push('scripts')
+<script src="{{ asset('js/mantra-integration.js') }}"></script>
+@endpush
+
+@push('styles')
 <style>
     /* Light Mode Text Colors - Ensure Visibility */
     .dark\:text-white {

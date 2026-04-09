@@ -22,6 +22,10 @@ class Voter extends Authenticatable
         'has_voted',
         'voted_at',
         'fingerprint',
+        'fingerprint_template',
+        'fingerprint_hash',
+        'fingerprint_registered_at',
+        'fingerprint_verified_at',
         'faculty',
         'faculty_code',
         'program',
@@ -36,6 +40,8 @@ class Voter extends Authenticatable
     protected $casts = [
         'has_voted' => 'boolean',
         'voted_at' => 'datetime',
+        'fingerprint_registered_at' => 'datetime',
+        'fingerprint_verified_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
 

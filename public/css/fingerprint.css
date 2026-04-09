@@ -1,0 +1,70 @@
+.fingerprint-container {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.fingerprint-btn {
+    background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%);
+    transition: all 0.3s ease;
+}
+
+.fingerprint-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139,0,0,0.3);
+}
+
+.fingerprint-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.fingerprint-status-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+    padding: 12px 15px;
+    border-radius: 4px;
+}
+
+.fingerprint-status-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+    padding: 12px 15px;
+    border-radius: 4px;
+}
+
+.fingerprint-status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+    padding: 12px 15px;
+    border-radius: 4px;
+}
+
+.fingerprint-preview {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.fingerprint-preview i {
+    margin-right: 8px;
+}
+
+.fingerprint-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.fingerprint-quality {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 8px;
+}

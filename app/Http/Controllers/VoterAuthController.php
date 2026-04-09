@@ -264,6 +264,14 @@ class VoterAuthController extends Controller
     {
         $voter = Auth::guard('voter')->user();
 
+        // Check if fingerprint is verified
+        if (!$request->has('fingerprint_verified') || $request->fingerprint_verified != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fingerprint verification required before voting',
+            ], 403);
+        }
+
         // Check if voter has already voted
         if ($voter->has_voted) {
             return response()->json([
@@ -276,6 +284,7 @@ class VoterAuthController extends Controller
             'votes' => 'required|array|min:4',
             'votes.*.sector_code' => 'required|string',
             'votes.*.candidate_id' => 'required|integer|exists:candidates,id',
+            'fingerprint_verified' => 'required|in:1',
         ]);
 
         try {

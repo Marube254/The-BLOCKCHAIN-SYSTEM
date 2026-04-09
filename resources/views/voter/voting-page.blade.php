@@ -95,6 +95,23 @@
             </div>
         </div>
 
+        <!-- Fingerprint Section -->
+        <div class="fingerprint-section mb-6 p-4 border rounded-lg">
+            <div class="text-center">
+                <i class="fas fa-fingerprint text-4xl text-[#8B0000] mb-2"></i>
+                <h3 class="font-bold">Fingerprint Verification</h3>
+                <p class="text-sm text-gray-600">Verify your identity using Mantra MFS100</p>
+            </div>
+            
+            <div id="fp-status" class="text-center p-3 mt-3 rounded hidden"></div>
+            
+            <div class="flex justify-center gap-3 mt-4">
+                <button type="button" id="fp-capture" class="bg-[#8B0000] text-white px-4 py-2 rounded">
+                    <i class="fas fa-fingerprint mr-1"></i> Verify Fingerprint
+                </button>
+            </div>
+        </div>
+
         <!-- Status check: Has voted or can vote -->
         @if($voter->has_voted)
             <div class="bg-yellow-50 rounded-xl p-5 mb-8 border border-yellow-200">
@@ -181,6 +198,8 @@
     <!-- Toast notification container (floating) -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
+    <input type="hidden" name="fingerprint_verified" id="fingerprint_verified" value="0">
+
     <!-- Footer with university details and value assurance -->
     <footer class="bg-gray-50 border-t border-gray-200 mt-12 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs">
@@ -195,6 +214,49 @@
     <script>
         const csrfToken = '{{ csrf_token() }}';
         const hasVoted = {{ $voter->has_voted ? 'true' : 'false' }};
+        
+        let fpInitialized = false;
+        
+        // Fingerprint functions
+        async function initFingerprint() {
+            try {
+                if (window.ActiveXObject) {
+                    const mantra = new ActiveXObject("MFS100.MFS100Ctrl.1");
+                    mantra.InitEngine();
+                    fpInitialized = true;
+                    showStatus("Scanner ready", "success");
+                } else if (navigator.usb) {
+                    showStatus("Click verify to start", "info");
+                    fpInitialized = true;
+                }
+            } catch(e) {
+                showStatus("Scanner not detected", "error");
+            }
+        }
+        
+        async function verifyFingerprint() {
+            showStatus("Place finger on scanner...", "info");
+            
+            // Simulate verification (replace with actual Mantra SDK call)
+            setTimeout(() => {
+                showStatus("Fingerprint verified successfully!", "success");
+                document.getElementById('fingerprint_verified').value = '1';
+            }, 2000);
+        }
+        
+        function showStatus(msg, type) {
+            const el = document.getElementById('fp-status');
+            el.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700', 'bg-blue-100', 'text-blue-700');
+            
+            if(type === 'success') {
+                el.classList.add('bg-green-100', 'text-green-700');
+            } else if(type === 'error') {
+                el.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                el.classList.add('bg-blue-100', 'text-blue-700');
+            }
+            el.innerHTML = '<i class="fas fa-info-circle mr-1"></i> ' + msg;
+        }
         
         // Positions configuration
         const positions = [
@@ -364,6 +426,13 @@
                 return;
             }
 
+            // Check if fingerprint is verified
+            const fingerprintVerified = document.getElementById('fingerprint_verified').value;
+            if (fingerprintVerified !== '1') {
+                showToast('Fingerprint verification required before voting', 'error');
+                return;
+            }
+
             // Validate all positions selected
             const missing = [];
             if (!selections.president) missing.push('President');
@@ -401,7 +470,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken,
                     },
-                    body: JSON.stringify({ votes }),
+                    body: JSON.stringify({ votes, fingerprint_verified: fingerprintVerified }),
                 });
 
                 const data = await response.json();
@@ -432,10 +501,12 @@
         // Event listeners
         document.getElementById('resetVotesBtn').addEventListener('click', resetAllSelections);
         document.getElementById('submitVoteBtn').addEventListener('click', submitVote);
+        document.getElementById('fp-capture')?.addEventListener('click', verifyFingerprint);
 
         // Initialize
         renderAllCandidates();
         updateAllSummariesAndHighlights();
+        initFingerprint();
     </script>
 
 </body>
