@@ -8,7 +8,9 @@ return new class extends Migration{
 public function up()
 {
     Schema::table('voters', function (Blueprint $table) {
-        $table->string('fingerprint_hash')->nullable();
+        if (!Schema::hasColumn('voters', 'fingerprint_hash')) {
+            $table->string('fingerprint_hash')->nullable();
+        }
     });
 }
 
