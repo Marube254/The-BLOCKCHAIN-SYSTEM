@@ -26,6 +26,8 @@ class Voter extends Authenticatable
         'fingerprint_hash',
         'fingerprint_registered_at',
         'fingerprint_verified_at',
+        'fingerprint_credential_id',
+        'fingerprint_enrolled_at',
         'faculty',
         'faculty_code',
         'program',

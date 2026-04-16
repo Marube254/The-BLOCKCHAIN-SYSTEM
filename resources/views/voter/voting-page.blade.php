@@ -71,7 +71,7 @@
                 </div>
                 <form id="logoutForm" method="POST" action="{{ route('voter.logout') }}" class="m-0">
                     @csrf
-                    <button type="submit" class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all flex items-center gap-2">
+                    <button id="logoutBtn" type="submit" class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all flex items-center gap-2">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </form>
@@ -207,7 +207,7 @@
                 <i class="fas fa-shield-alt text-[#8B0000] text-sm"></i>
                 <span>Secure end-to-end encrypted voting • $5,000 value infrastructure grant</span>
             </div>
-            <div class="mt-2 md:mt-0">© 2025 International University of East Africa • Student Electoral Commission</div>
+            <div class="mt-2 md:mt-0">© 2026 International University of East Africa • Student Electoral Commission</div>
         </div>
     </footer>
 
@@ -260,10 +260,10 @@
         
         // Positions configuration
         const positions = [
-            { id: 'president', title: 'President', summaryId: 'summaryPres', containerId: 'presidentContainer' },
-            { id: 'vpacademic', title: 'Vice President (Academic)', summaryId: 'summaryVp', containerId: 'vpAcademicContainer' },
-            { id: 'secretary', title: 'Secretary General', summaryId: 'summarySec', containerId: 'secretaryContainer' },
-            { id: 'treasurer', title: 'Treasurer', summaryId: 'summaryTre', containerId: 'treasurerContainer' }
+            { id: 'president', code: 'president', title: 'President', summaryId: 'summaryPres', containerId: 'presidentContainer' },
+            { id: 'vpacademic', code: 'vpacademic', title: 'Vice President (Academic)', summaryId: 'summaryVp', containerId: 'vpAcademicContainer' },
+            { id: 'secretary', code: 'secretary', title: 'Secretary General', summaryId: 'summarySec', containerId: 'secretaryContainer' },
+            { id: 'treasurer', code: 'treasurer', title: 'Treasurer', summaryId: 'summaryTre', containerId: 'treasurerContainer' }
         ];
 
         // Candidates data from backend (explicit per position)
@@ -290,7 +290,7 @@
                 let candidateName = 'Not selected';
                 
                 if (selectedId) {
-                    const candidates = getCandidatesByPosition(pos.code);
+const candidates = getCandidatesByPosition(pos.code ?? pos.id);
                     const candidate = candidates.find(c => c.id === selectedId);
                     if (candidate) candidateName = candidate.display_name || (candidate.first_name + ' ' + candidate.last_name);
                 }
@@ -327,7 +327,7 @@
                 const container = document.getElementById(pos.containerId);
                 if (!container) continue;
                 
-                const candidatesList = getCandidatesByPosition(pos.code);
+                const candidatesList = getCandidatesByPosition(pos.code ?? pos.id);
                 container.innerHTML = '';
                 
                 candidatesList.forEach(candidate => {
@@ -492,7 +492,8 @@
         }
 
         // Logout handler
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
+        document.getElementById('logoutBtn')?.addEventListener('click', async (event) => {
+            event.preventDefault();
             if (confirm('Are you sure you want to logout?')) {
                 window.location.href = '{{ route("voter.logout") }}';
             }

@@ -56,7 +56,7 @@
             <div id="registerForm" class="mt-6 space-y-4 hidden">
                 <input type="text" id="regFirstName" placeholder="First Name" class="w-full px-4 py-2 border rounded-lg">
                 <input type="text" id="regLastName" placeholder="Last Name" class="w-full px-4 py-2 border rounded-lg">
-                <input type="text" id="regVoterId" placeholder="Admission Number (e.g., IUEA-2025-1234)" class="w-full px-4 py-2 border rounded-lg">
+                <input type="text" id="regVoterId" placeholder="Admission Number (e.g., IUEA-2026-1234)" class="w-full px-4 py-2 border rounded-lg">
                 <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-4 py-2 border rounded-lg">
                 <input type="password" id="regPassword" placeholder="Password (min 6 characters)" class="w-full px-4 py-2 border rounded-lg">
                 <input type="password" id="regConfirmPassword" placeholder="Confirm Password" class="w-full px-4 py-2 border rounded-lg">

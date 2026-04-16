@@ -30,7 +30,7 @@
         
         <p style="color: #999; font-size: 12px; text-align: center;">
             If you did not request this password reset, please ignore this email.<br>
-            © 2025 IUEA Voting System. All rights reserved.
+            © 2026 IUEA Voting System. All rights reserved.
         </p>
     </div>
 </body>

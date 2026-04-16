@@ -126,26 +126,50 @@ class VoteController extends Controller
         return response()->json($request->user());
     }
 
+    public function getVoterFingerprint(Request $request)
+    {
+        $voter = $request->user();
+        return response()->json([
+            'credential_id' => $voter->fingerprint_credential_id,
+            'enrolled_at' => $voter->fingerprint_enrolled_at
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out']);
     }
 
-    public function castVote(Request $request)
+    public function enrollFingerprint(Request $request)
     {
         try {
             $voter = $request->user();
 
-            if ($voter->has_voted) {
-                return response()->json(['message' => 'You have already voted'], 403);
-            }
-
             $request->validate([
-                'votes' => 'required|array',
-                'votes.*.sector' => 'required|string',
-                'votes.*.candidate_id' => 'required|exists:candidates,id'
+                'credential_id' => 'required|string'
             ]);
+
+            $voter->fingerprint_credential_id = $request->credential_id;
+            $voter->fingerprint_enrolled_at = now();
+            $voter->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fingerprint enrolled successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function castVote(Request $request)
+    {
+        try {
+            $voter = $request->user();
 
             DB::beginTransaction();
 

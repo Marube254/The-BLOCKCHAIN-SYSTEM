@@ -75,12 +75,44 @@
 
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Student Government Elections 2025</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Student Government Elections 2026</h1>
                         <div class="badge bg-primary text-white p-2"><i class="fas fa-link mr-1"></i> Blockchain Secured</div>
                     </div>
 
                     <div id="loadingSpinner" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Loading candidates...</p></div>
                     <div id="candidatesContainer"></div>
+
+                    <!-- Fingerprint Biometric Verification Section -->
+                    <div id="fingerprintSection" class="card shadow mb-4" style="background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%); color: #ffffff;">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-fingerprint fa-3x text-white mb-2"></i>
+                                <h3 class="font-weight-bold text-white">Biometric Verification</h3>
+                                <p class="text-white-50 small">Verify your identity before voting</p>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="scanner-select" class="text-white small font-weight-bold">Select Fingerprint Scanner</label>
+                                <select id="scanner-select" class="form-control">
+                                    <option value="webauthn">Windows Hello (Built-in Scanner)</option>
+                                    <option value="mantra">Mantra MFS100 (External USB)</option>
+                                </select>
+                            </div>
+
+                            <div id="fp-status" style="display:none;" class="text-center p-2 mt-2 rounded"></div>
+
+                            <div class="d-flex" style="gap: 1rem;">
+                                <button id="fp-enroll-btn" class="btn btn-primary btn-block">
+                                    <i class="fas fa-fingerprint mr-2"></i> Enroll Fingerprint
+                                </button>
+                                <button id="fp-verify-btn" class="btn btn-success btn-block">
+                                    <i class="fas fa-check-circle mr-2"></i> Verify Fingerprint
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="fingerprint_verified" value="0">
+                        </div>
+                    </div>
 
                     <div id="voteSummary" class="card shadow mb-4" style="display: none;">
                         <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Your Vote Summary</h6></div>
@@ -91,7 +123,7 @@
                     </div>
                 </div>
             </div>
-            <footer class="sticky-footer bg-white"><div class="container my-auto"><div class="copyright text-center my-auto"><span>© 2025 IUEA Blockchain Voting System | Immutable • Transparent • Secure</span></div></div></footer>
+            <footer class="sticky-footer bg-white"><div class="container my-auto"><div class="copyright text-center my-auto"><span>© 2026 IUEA Blockchain Voting System | Immutable • Transparent • Secure</span></div></div></footer>
         </div>
     </div>
 
@@ -110,6 +142,9 @@
         let currentVoter = null;
         let candidates = {};
         let selectedVotes = {};
+        let selectedScanner = 'webauthn';
+        let mantraScanner = null;
+        let fingerprintVerified = false;
         
         if (!authToken) window.location.href = 'login.html';
         
@@ -122,7 +157,265 @@
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 4000);
         }
-        
+
+        function setFpStatus(statusDiv, html, bgColor, color = '#ffffff') {
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'text-center p-2 mt-2 rounded';
+            statusDiv.style.backgroundColor = bgColor;
+            statusDiv.style.color = color;
+            statusDiv.innerHTML = html;
+        }
+
+        async function initMantraScanner() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = 'Connecting to Mantra MFS100...';
+
+            try {
+                if (typeof MantraMFS100 === 'undefined') {
+                    throw new Error('MantraMFS100 SDK is not available');
+                }
+                mantraScanner = new MantraMFS100();
+                const connected = await mantraScanner.connect();
+                if (connected) {
+                    statusDiv.innerHTML = '✅ Mantra MFS100 connected and ready';
+                    setFpStatus(statusDiv, '✅ Mantra MFS100 connected and ready', '#28a745');
+                } else {
+                    setFpStatus(statusDiv, '⚠️ Mantra MFS100 not detected. Please check connection.', '#ffc107');
+                }
+            } catch (error) {
+                setFpStatus(statusDiv, '❌ Mantra connection failed: ' + (error.message || 'Unknown error'), '#dc3545');
+            }
+        }
+
+        async function checkWebAuthnSupport() {
+            if (!window.PublicKeyCredential) {
+                showToast('WebAuthn not supported in this browser. Please use Chrome or Edge.', true);
+                return false;
+            }
+            const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+            if (!available) {
+                showToast('No fingerprint scanner detected. Please set up Windows Hello.', true);
+                return false;
+            }
+            return true;
+        }
+
+        async function enrollFingerprint() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+
+            if (selectedScanner === 'webauthn') {
+                const supported = await checkWebAuthnSupport();
+                if (!supported) return;
+
+                statusDiv.className = 'text-center p-2 mt-2 rounded bg-blue-500 text-white';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on scanner to enroll...';
+
+                try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const voterId = currentVoter.id ? currentVoter.id.toString() : 'voter-' + Date.now();
+                    const voterName = currentVoter.email || 'voter@iuea.ac.ug';
+                    const voterDisplayName = currentVoter.full_name || (currentVoter.first_name + ' ' + currentVoter.last_name) || 'IUEA Voter';
+
+                    const publicKeyCredentialCreationOptions = {
+                        challenge: challenge,
+                        rp: {
+                            name: 'IUEA Voting System',
+                            id: window.location.hostname
+                        },
+                        user: {
+                            id: new TextEncoder().encode(voterId),
+                            name: voterName,
+                            displayName: voterDisplayName
+                        },
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            userVerification: 'required'
+                        },
+                        timeout: 60000,
+                        attestation: 'none'
+                    };
+
+                    console.log('WebAuthn options:', publicKeyCredentialCreationOptions);
+
+                    const credential = await navigator.credentials.create({
+                        publicKey: publicKeyCredentialCreationOptions
+                    });
+
+                    const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+
+                    const response = await fetch('/api/enroll-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ credential_id: credentialId })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        statusDiv.className = 'text-center p-2 mt-2 rounded bg-green-500 text-white';
+                        statusDiv.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ' + result.message;
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    console.error('WebAuthn enrollment error:', error);
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-red-500 text-white';
+                    statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Enrollment failed: ' + error.message;
+                }
+            } else {
+                if (!mantraScanner || !mantraScanner.isConnected) {
+                    await initMantraScanner();
+                    if (!mantraScanner || !mantraScanner.isConnected) {
+                        setFpStatus(statusDiv, 'Mantra scanner not connected', '#dc3545');
+                        return;
+                    }
+                }
+
+                setFpStatus(statusDiv, '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on Mantra scanner...', '#007bff');
+
+                try {
+                    const result = await mantraScanner.capture();
+                    const response = await fetch('/api/enroll-mantra-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ fingerprint_template: result.template, fingerprint_quality: result.quality })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        setFpStatus(statusDiv, '<i class="fas fa-check-circle mr-1"></i> ' + data.message, '#28a745');
+                    } else {
+                        throw new Error(data.message || 'Enrollment failed');
+                    }
+                } catch (error) {
+                    setFpStatus(statusDiv, '<i class="fas fa-exclamation-triangle mr-1"></i> ' + (error.message || 'Unknown error'), '#dc3545');
+                }
+            }
+        }
+
+        async function verifyFingerprint() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+
+            if (selectedScanner === 'webauthn') {
+                const storedCredentialId = await getStoredCredentialId();
+                if (!storedCredentialId) {
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-yellow-500 text-white';
+                    statusDiv.innerHTML = 'No fingerprint enrolled. Please click "Enroll Fingerprint" first.';
+                    return;
+                }
+
+                statusDiv.className = 'text-center p-2 mt-2 rounded bg-blue-500 text-white';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on scanner to verify...';
+
+                try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const publicKeyCredentialRequestOptions = {
+                        challenge: challenge,
+                        timeout: 60000,
+                        rpId: window.location.hostname,
+                        userVerification: 'required',
+                        allowCredentials: [{
+                            id: base64ToArrayBuffer(storedCredentialId),
+                            type: 'public-key'
+                        }]
+                    };
+
+                    console.log('WebAuthn verification options:', publicKeyCredentialRequestOptions);
+
+                    const assertion = await navigator.credentials.get({
+                        publicKey: publicKeyCredentialRequestOptions
+                    });
+
+                    if (assertion) {
+                        fingerprintVerified = true;
+                        document.getElementById('fingerprint_verified').value = '1';
+                        statusDiv.className = 'text-center p-2 mt-2 rounded bg-green-500 text-white';
+                        statusDiv.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Fingerprint verified successfully!';
+                        showToast('Fingerprint verified! You can now vote.');
+                    }
+                } catch (error) {
+                    console.error('WebAuthn verification error:', error);
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-red-500 text-white';
+                    statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Verification failed: ' + (error.message || 'Unknown error');
+                    fingerprintVerified = false;
+                    document.getElementById('fingerprint_verified').value = '0';
+                }
+            } else {
+                if (!mantraScanner || !mantraScanner.isConnected) {
+                    await initMantraScanner();
+                    if (!mantraScanner || !mantraScanner.isConnected) {
+                        setFpStatus(statusDiv, 'Mantra scanner not connected', '#dc3545');
+                        return;
+                    }
+                }
+
+                setFpStatus(statusDiv, '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on Mantra scanner...', '#007bff');
+
+                try {
+                    const result = await mantraScanner.capture();
+                    const response = await fetch('/api/verify-mantra-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ matched: true, template: result.template })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        fingerprintVerified = true;
+                        document.getElementById('fingerprint_verified').value = '1';
+                        setFpStatus(statusDiv, '<i class="fas fa-check-circle mr-1"></i> ' + data.message, '#28a745');
+                    } else {
+                        throw new Error(data.message || 'Verification failed');
+                    }
+                } catch (error) {
+                    fingerprintVerified = false;
+                    document.getElementById('fingerprint_verified').value = '0';
+                    setFpStatus(statusDiv, '<i class="fas fa-exclamation-triangle mr-1"></i> ' + (error.message || 'Unknown error'), '#dc3545');
+                }
+            }
+        }
+
+        async function getStoredCredentialId() {
+            try {
+                const response = await fetch('/api/voter-fingerprint', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                return data.credential_id;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
         async function apiCall(endpoint, method = 'GET', data = null) {
             const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` };
             const response = await fetch(`${API_BASE}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : null });
@@ -130,16 +423,50 @@
             return response.json();
         }
         
+        function getVoterDisplayName(voter) {
+            if (!voter) return 'Voter';
+            const fullName = voter.full_name || `${(voter.first_name || '').trim()} ${(voter.last_name || '').trim()}`.trim();
+            return fullName || voter.voter_id || 'Voter';
+        }
+
+        function updateVoterNameElement() {
+            const voterNameElement = document.getElementById('voterName');
+            if (voterNameElement && currentVoter) {
+                voterNameElement.innerText = getVoterDisplayName(currentVoter);
+            }
+        }
+
         async function loadUser() {
-            try { currentVoter = await apiCall('/user'); document.getElementById('voterName').innerText = currentVoter.full_name; }
-            catch { logout(); }
+            try {
+                currentVoter = await apiCall('/user');
+                if (!currentVoter.full_name && currentVoter.first_name && currentVoter.last_name) {
+                    currentVoter.full_name = `${currentVoter.first_name} ${currentVoter.last_name}`;
+                }
+                if (!currentVoter.full_name) {
+                    currentVoter.full_name = currentVoter.voter_id || 'Voter';
+                }
+                updateVoterNameElement();
+            } catch (error) {
+                console.error('Failed to load user:', error);
+                logout();
+            }
         }
-        
+
         async function loadCandidates() {
-            try { candidates = await apiCall('/candidates'); renderCandidates(); }
-            catch (error) { showToast('Failed to load candidates', true); }
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            if (loadingSpinner) loadingSpinner.style.display = 'flex';
+            try {
+                candidates = await apiCall('/candidates');
+                selectedVotes = {};
+                renderCandidates();
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+            } catch (error) {
+                console.error('Failed to load candidates:', error);
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                showToast('Failed to load candidates. Please refresh the page.', true);
+            }
         }
-        
+
         function renderCandidates() {
             document.getElementById('loadingSpinner').style.display = 'none';
             const container = document.getElementById('candidatesContainer');
@@ -183,6 +510,8 @@
         
         async function castVote() {
             if (currentVoter?.has_voted) return showToast('You have already voted!', true);
+            const fingerprintVerifiedValue = document.getElementById('fingerprint_verified')?.value === '1';
+            if (!fingerprintVerifiedValue) return showToast('Please verify your fingerprint before voting', true);
             const votesArray = Object.entries(selectedVotes).map(([sector, candidate_id]) => ({ sector, candidate_id }));
             if (votesArray.length !== Object.keys(candidates).length) return showToast(`Please vote in all sectors. Selected ${votesArray.length} of ${Object.keys(candidates).length}`, true);
             if (!confirm('Cast your vote? This action is irreversible and recorded on the blockchain.')) return;
@@ -198,10 +527,35 @@
         function logout() { localStorage.clear(); window.location.href = 'login.html'; }
         
         document.getElementById('logoutBtn').onclick = logout;
+        document.getElementById('scanner-select')?.addEventListener('change', function(e) {
+            selectedScanner = e.target.value;
+            showToast(`Switched to ${selectedScanner === 'webauthn' ? 'Windows Hello' : 'Mantra MFS100'} scanner`);
+            if (selectedScanner === 'mantra') {
+                initMantraScanner();
+            }
+        });
+        document.getElementById('fp-enroll-btn')?.addEventListener('click', enrollFingerprint);
+        document.getElementById('fp-verify-btn')?.addEventListener('click', verifyFingerprint);
         document.getElementById('castVoteBtn').onclick = castVote;
-        
-        loadUser();
-        loadCandidates();
+
+        if (authToken) {
+            (async () => {
+                try {
+                    currentVoter = await apiCall('/user');
+                    if (!currentVoter.full_name && currentVoter.first_name && currentVoter.last_name) {
+                        currentVoter.full_name = `${currentVoter.first_name} ${currentVoter.last_name}`;
+                    }
+                    if (!currentVoter.full_name) {
+                        currentVoter.full_name = currentVoter.voter_id || 'Voter';
+                    }
+                    updateVoterNameElement();
+                    await loadCandidates();
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    logout();
+                }
+            })();
+        }
     </script>
 </body>
 </html>

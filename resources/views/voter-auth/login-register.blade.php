@@ -75,7 +75,7 @@
             <i class="fas fa-university text-white text-2xl"></i>
           </div>
           <h2 class="mt-6 text-3xl font-bold text-gray-900">IUEA Voting System</h2>
-          <p class="mt-2 text-sm text-gray-600">Student Government Elections 2025</p>
+          <p class="mt-2 text-sm text-gray-600">Student Government Elections 2026</p>
           <!-- Production Notice Badge -->
           <div class="mt-3 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
             <i class="fas fa-info-circle mr-1"></i> Demo Version
@@ -92,7 +92,7 @@
         <div id="loginForm" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Admission Number</label>
-            <input type="text" id="loginAdmission" placeholder="e.g., IUEA-2025-1234" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#8B0000] focus:border-[#8B0000]">
+            <input type="text" id="loginAdmission" placeholder="e.g., IUEA-2026-1234" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#8B0000] focus:border-[#8B0000]">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
@@ -113,7 +113,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Admission Number *</label>
-            <input type="text" id="regAdmission" placeholder="e.g., IUEA-2025-1234" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#8B0000] focus:border-[#8B0000]">
+            <input type="text" id="regAdmission" placeholder="e.g., IUEA-2026-1234" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#8B0000] focus:border-[#8B0000]">
             <div id="admissionError" class="error-message hidden"></div>
             <p class="text-xs text-gray-500 mt-1">Unique admission number. This will be your login ID.</p>
           </div>
