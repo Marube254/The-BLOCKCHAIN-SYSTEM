@@ -95,9 +95,51 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .footer-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .footer-link {
+            transition: all 0.3s ease;
+        }
+        .footer-link:hover {
+            color: #8B0000;
+            transform: translateX(5px);
+        }
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-3px);
+            color: #8B0000 !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#8B0000] rounded-full flex items-center justify-center">
+                        <i class="fas fa-university text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">IUEA <span class="text-[#8B0000]">VoteHub</span></h1>
+                        <p class="text-xs text-gray-500">Blockchain Voting System</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 items-center">
+                    <a href="voting-dashboard.html" class="text-[#8B0000] font-semibold">Vote</a>
+                    <a href="about.html" class="text-gray-600 hover:text-[#8B0000] transition">About</a>
+                    <button id="logoutBtn" class="text-gray-600 hover:text-[#8B0000] transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
 <div id="app">
     <!-- AUTH PAGE -->
@@ -568,5 +610,70 @@
         })();
     }
 </script>
+
+<footer class="footer-bg text-white pt-12 pb-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 relative inline-block">
+                    IUEA VoteHub
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#8B0000]"></span>
+                </h3>
+                <p class="text-gray-400 text-sm mt-3">
+                    A blockchain-powered voting system for student government elections at the International University of East Africa.
+                </p>
+                <div class="flex gap-3 mt-4">
+                    <i class="fas fa-link text-[#8B0000]"></i>
+                    <span class="text-xs text-gray-400">Blockchain Verified</span>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-[#8B0000]">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Voting Dashboard</a></li>
+                    <li><a href="#" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> View Results</a></li>
+                    <li><a href="about.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> About Us</a></li>
+                    <li><a href="contact.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-[#8B0000]">Information</h3>
+                <ul class="space-y-2">
+                    <li><a href="privacy.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Privacy Policy</a></li>
+                    <li><a href="terms.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Terms of Service</a></li>
+                    <li><a href="blockchain.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Blockchain Verification</a></li>
+                    <li><a href="faq.html" class="footer-link text-gray-400 hover:text-[#8B0000] text-sm flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-[#8B0000]">Connect With Us</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-center gap-2 text-gray-400 text-sm"><i class="fas fa-map-marker-alt text-[#8B0000]"></i> Kansanga, Kampala, Uganda</li>
+                    <li class="flex items-center gap-2 text-gray-400 text-sm"><i class="fas fa-envelope text-[#8B0000]"></i> voting@iuea.ac.ug</li>
+                    <li class="flex items-center gap-2 text-gray-400 text-sm"><i class="fas fa-phone text-[#8B0000]"></i> +256 (0) 123 456789</li>
+                </ul>
+                <div class="flex gap-4 mt-4">
+                    <a href="#" class="social-icon text-gray-400 hover:text-[#8B0000] text-xl"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-icon text-gray-400 hover:text-[#8B0000] text-xl"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon text-gray-400 hover:text-[#8B0000] text-xl"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-icon text-gray-400 hover:text-[#8B0000] text-xl"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon text-gray-400 hover:text-[#8B0000] text-xl"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 pt-6 mt-6 text-center">
+            <p class="text-gray-500 text-sm">
+                &copy; 2025 International University of East Africa. All rights reserved.
+                <span class="text-[#8B0000]">|</span> Learning to Succeed
+            </p>
+            <p class="text-gray-600 text-xs mt-2">
+                Powered by Laravel | Blockchain SHA-256 | Filament Admin
+            </p>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>
+
+

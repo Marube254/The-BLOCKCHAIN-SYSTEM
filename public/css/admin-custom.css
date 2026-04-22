@@ -61,14 +61,14 @@
 }
 
 .fi-sidebar-nav-item:hover {
-    background-color: var(--dark-red-light) !important;
+    background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%) !important;
     color: white !important;
     border-left-color: white !important;
     padding-left: 1.5rem !important;
 }
 
 .fi-sidebar-nav-item.fi-sidebar-nav-item-active {
-    background-color: var(--dark-red-dark) !important;
+    background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%) !important;
     color: white !important;
     border-left-color: white !important;
     font-weight: 600 !important;
@@ -197,6 +197,59 @@
 
 .fi-dataTable-tbody tr:hover {
     background-color: #f9fafb !important;
+}
+
+/* Force active sidebar item to stay red */
+.fi-sidebar-item-active .fi-sidebar-item-button {
+    background-color: #6a0000 !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: white !important;
+}
+
+/* Remove white background on hover */
+.fi-sidebar-item-button:hover {
+    background-color: #6a0000 !important;
+}
+
+.fi-sidebar-item-button:hover .fi-sidebar-item-label,
+.fi-sidebar-item-button:hover .fi-sidebar-item-icon {
+    color: white !important;
+}
+
+/* Ensure sidebar background stays red */
+.fi-sidebar-nav {
+    background: linear-gradient(180deg, #8B0000 0%, #6a0000 100%) !important;
+}
+
+/* Force sidebar to always stay red */
+.ps-sidebar-container,
+.css-dev-only-do-not-override-1s9j3uv,
+[data-testid="sidebar"] {
+    background: #8B0000 !important;
+}
+
+/* Remove any white backgrounds */
+.css-dev-only-do-not-override-1s9j3uv .ps-menu-button:hover,
+.ps-menu-button:hover {
+    background-color: #6a0000 !important;
+}
+
+/* Active menu item - keep red */
+.css-dev-only-do-not-override-1s9j3uv .ps-active .ps-menu-button,
+.ps-active .ps-menu-button {
+    background-color: #6a0000 !important;
+}
+
+/* Any white backgrounds on menu items */
+.ps-menu-button {
+    background: transparent !important;
+}
+
+.ps-menu-button:hover {
+    background: #6a0000 !important;
 }
 
 /* Form Styling */

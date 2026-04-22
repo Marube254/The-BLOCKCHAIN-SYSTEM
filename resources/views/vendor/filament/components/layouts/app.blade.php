@@ -71,8 +71,29 @@
 
     /* Active Sidebar Item */
     .fi-sidebar-nav-item-active {
-        background-color: #fef2f2 !important;
-        color: #8B0000 !important;
+        background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%) !important;
+        color: white !important;
+    }
+
+    .fi-sidebar-nav-item-active .fi-sidebar-nav-item-label,
+    .fi-sidebar-nav-item-active .fi-sidebar-nav-item-icon {
+        color: white !important;
+    }
+
+    /* Remove white background on hover */
+    .fi-sidebar-nav-item:hover {
+        background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%) !important;
+        color: white !important;
+    }
+
+    .fi-sidebar-nav-item:hover .fi-sidebar-nav-item-label,
+    .fi-sidebar-nav-item:hover .fi-sidebar-nav-item-icon {
+        color: white !important;
+    }
+
+    /* Ensure sidebar stays dark red */
+    .fi-sidebar-nav {
+        background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%) !important;
     }
 
     /* Table Headers */

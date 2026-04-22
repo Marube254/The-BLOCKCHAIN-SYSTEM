@@ -35,7 +35,7 @@ class CandidateResource extends Resource
                             ->required()
                             ->options(function () {
                                 return Sector::whereNotNull('sector_code')
-                                    ->pluck('sector_name', 'sector_code')
+                                    ->pluck('name', 'sector_code')
                                     ->toArray();
                             })
                             ->searchable(),
@@ -130,13 +130,13 @@ class CandidateResource extends Resource
                     ->badge()
                     ->color('primary'),
 
-                Tables\Columns\IconColumn::make('status')
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Active')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->colors([
+                        'success' => 'active',
+                        'danger' => 'inactive',
+                    ])
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Added')
@@ -146,7 +146,7 @@ class CandidateResource extends Resource
                 Tables\Filters\SelectFilter::make('sector')
                     ->options(function () {
                         return Sector::whereNotNull('sector_code')
-                            ->pluck('sector_name', 'sector_code')
+                            ->pluck('name', 'sector_code')
                             ->toArray();
                     }),
                 Tables\Filters\Filter::make('active')

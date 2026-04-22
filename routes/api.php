@@ -15,6 +15,8 @@ Route::get('/candidates', [VoteController::class, 'getCandidates']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/vote', [VoteController::class, 'castVote']);
     Route::post('/enroll-fingerprint', [VoteController::class, 'enrollFingerprint']);
+    Route::post('/enroll-mantra-fingerprint', [VoteController::class, 'enrollMantraFingerprint']);
+    Route::post('/verify-mantra-fingerprint', [VoteController::class, 'verifyMantraFingerprint']);
     Route::get('/voter-fingerprint', [VoteController::class, 'getVoterFingerprint']);
     Route::get('/user', [VoteController::class, 'getUser']);
     Route::post('/logout', [VoteController::class, 'logout']);

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - IUEA Voting System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .privacy-header {
+            background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#8B0000] rounded-full flex items-center justify-center">
+                        <i class="fas fa-university text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">IUEA <span class="text-[#8B0000]">VoteHub</span></h1>
+                        <p class="text-xs text-gray-500">Privacy Policy</p>
+                    </div>
+                </div>
+                <a href="voting-dashboard.html" class="text-gray-600 hover:text-[#8B0000] transition">← Back to Voting</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="privacy-header text-white py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <i class="fas fa-shield-alt text-4xl mb-4"></i>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Privacy Policy</h1>
+            <p class="text-lg opacity-90">Effective Date: 2026</p>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">1. Introduction</h2>
+            <p class="text-gray-600 mb-4">Welcome to the IUEA Blockchain Voting System. Your privacy is of utmost importance to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our voting system. Please read this policy carefully before registering and voting.</p>
+            <p class="text-gray-600">By using the IUEA Blockchain Voting System, you consent to the data practices described in this policy.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">2. Information We Collect</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">2.1 Personal Information</h3>
+                    <p class="text-gray-600">When you register to vote, we collect the following personal information:</p>
+                    <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1 ml-4">
+                        <li>Full Name (First Name and Last Name)</li>
+                        <li>Admission Number (Voter ID)</li>
+                        <li>Email Address</li>
+                        <li>Faculty and Program of Study</li>
+                        <li>Year of Study</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">2.2 Biometric Data</h3>
+                    <p class="text-gray-600">If you choose to use fingerprint verification, we collect and store:</p>
+                    <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1 ml-4">
+                        <li>Fingerprint credential ID (not the actual fingerprint image)</li>
+                        <li>Fingerprint enrollment timestamp</li>
+                        <li>Fingerprint verification status</li>
+                    </ul>
+                    <p class="text-gray-600 mt-2 text-sm italic">Note: We do NOT store your actual fingerprint image. Only a cryptographic credential ID is stored for verification purposes.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">2.3 Voting Data</h3>
+                    <p class="text-gray-600">When you cast your vote, we record:</p>
+                    <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1 ml-4">
+                        <li>Your selected candidate per sector</li>
+                        <li>Timestamp of your vote</li>
+                        <li>Blockchain transaction hash (SHA-256)</li>
+                        <li>IP address (for security auditing)</li>
+                        <li>Browser and device information</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">3. How We Use Your Information</h2>
+            <ul class="list-disc list-inside text-gray-600 space-y-2 ml-4">
+                <li>To verify your eligibility to vote</li>
+                <li>To ensure each student votes only once</li>
+                <li>To record and count votes accurately</li>
+                <li>To generate blockchain hashes for vote immutability</li>
+                <li>To send vote confirmation emails</li>
+                <li>To authenticate your identity during voting (including fingerprint verification)</li>
+                <li>To maintain audit trails for election transparency</li>
+                <li>To improve system security and performance</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">4. Blockchain Transparency</h2>
+            <p class="text-gray-600 mb-4">The IUEA Blockchain Voting System uses SHA-256 cryptographic hashing to secure votes. When you cast your vote, a unique transaction hash is generated and stored on our blockchain ledger. This hash is publicly verifiable without revealing your identity or your specific vote choice.</p>
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <p class="text-sm text-gray-700 font-mono break-all">Example Hash: 0x8b5f3a2e9d1c7f4e6a2b8c3d5e7f9a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9</p>
+            </div>
+            <p class="text-gray-600 mt-4">This transparency ensures that anyone can verify that votes were counted correctly without compromising voter privacy.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">5. Data Protection and Security</h2>
+            <ul class="list-disc list-inside text-gray-600 space-y-2 ml-4">
+                <li>Passwords are encrypted using bcrypt hashing</li>
+                <li>All data transmission uses HTTPS encryption</li>
+                <li>Fingerprint data is stored as cryptographic credentials, not actual fingerprints</li>
+                <li>Votes are immutable once recorded on the blockchain</li>
+                <li>Regular security audits are conducted</li>
+                <li>Access to voter data is restricted to authorized election officials only</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">6. Your Rights</h2>
+            <p class="text-gray-600 mb-2">As a voter, you have the following rights:</p>
+            <ul class="list-disc list-inside text-gray-600 space-y-1 ml-4">
+                <li>Right to access your personal information</li>
+                <li>Right to update your account information</li>
+                <li>Right to request deletion of your account (after election period)</li>
+                <li>Right to receive a copy of your vote receipt (transaction hash)</li>
+                <li>Right to verify that your vote was counted</li>
+                <li>Right to lodge a complaint with the IUEA Electoral Commission</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">7. Data Retention</h2>
+            <p class="text-gray-600 mb-4">Voter registration data is retained for the duration of the election period and for audit purposes as required by IUEA regulations. Blockchain transaction hashes are retained permanently for election transparency and historical reference. Fingerprint credential data is retained only for the active voter and can be removed upon account deletion.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">8. Third-Party Services</h2>
+            <p class="text-gray-600">We use the following third-party services:</p>
+            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1 ml-4">
+                <li><strong>EmailJS</strong> - For sending vote confirmation and password reset emails</li>
+                <li><strong>WebAuthn API</strong> - For fingerprint verification (Windows Hello)</li>
+            </ul>
+            <p class="text-gray-600 mt-2">These services comply with data protection standards and do not store your voting data.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-6">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">9. Changes to This Privacy Policy</h2>
+            <p class="text-gray-600">We may update this Privacy Policy from time to time. We will notify users of any material changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8">
+            <h2 class="text-xl font-bold text-[#8B0000] mb-4">10. Contact Information</h2>
+            <p class="text-gray-600 mb-2">If you have any questions about this Privacy Policy or your data, please contact:</p>
+            <p class="text-gray-800"><strong>IUEA Electoral Commission</strong></p>
+            <p class="text-gray-600">Email: voting@iuea.ac.ug</p>
+            <p class="text-gray-600">Phone: +256 (0) 123 456789</p>
+            <p class="text-gray-600">Address: Kansanga, Kampala, Uganda</p>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="voting-dashboard.html" class="inline-block bg-[#8B0000] text-white px-6 py-2 rounded-lg hover:bg-[#6a0000] transition">Back to Voting Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2026 International University of East Africa. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

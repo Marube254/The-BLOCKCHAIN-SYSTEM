@@ -1,299 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="IUEA Blockchain Voting System - Student Elections">
-    <meta name="author" content="IUEA">
-    <title>IUEA Voting System | Login</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IUEA Blockchain Voting System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .bg-gradient-primary {
-            background: linear-gradient(180deg, #8B0000 0%, #6a0000 100%) !important;
-        }
-        .btn-primary {
-            background-color: #8B0000 !important;
-            border-color: #8B0000 !important;
-        }
-        .btn-primary:hover {
-            background-color: #6a0000 !important;
-            border-color: #6a0000 !important;
-        }
-        .text-primary {
-            color: #8B0000 !important;
-        }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        .blockchain-badge {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(139, 0, 0, 0.1);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #8B0000;
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .bg-maroon { background-color: #8B0000; }
+        .btn-maroon { background-color: #8B0000; transition: all 0.3s ease; }
+        .btn-maroon:hover { background-color: #6a0000; transform: scale(0.98); }
     </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body class="bg-gray-50">
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-6 col-md-8">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="p-5">
-                                    <div class="text-center mb-4">
-                                        <div style="background: transparent; padding: 10px; margin-bottom: 15px;">
-                                            <img src="images/iuea-logo.png" alt="IUEA Logo" style="height: 70px; width: auto; display: block; margin: 0 auto;">
-                                        </div>
-                                        <h2 class="h4 text-gray-800 mb-1">Voting System</h2>
-                                        <p class="text-muted small">Student Government Elections 2026</p>
-                                        <div class="badge bg-light text-dark mt-2">
-                                            <i class="fas fa-link text-primary"></i> Blockchain Verified | Immutable | Transparent
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-center mb-4">
-                                        <a href="#" class="btn btn-outline-primary active" id="loginTab">Login</a>
-                                        <a href="#" class="btn btn-outline-secondary" id="registerTab">Register</a>
-                                    </div>
-                                    
-                                    <!-- Login Form -->
-                                    <form id="loginForm" class="user">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" id="loginVoterId" placeholder="Admission Number">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-control form-control-user" id="loginPassword" placeholder="Password">
-                                        </div>
-                                        <button type="button" id="loginBtn" class="btn btn-primary btn-user btn-block">Login to Vote</button>
-                                        <hr>
-                                        <div class="text-center">
-                                            <a class="small" href="#" id="forgotPasswordBtn">Forgot Password?</a>
-                                        </div>
-                                    </form>
-                                    
-                                    <!-- Register Form -->
-                                    <form id="registerForm" class="user" style="display: none;">
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="text" class="form-control form-control-user" id="regFirstName" placeholder="First Name">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control form-control-user" id="regLastName" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" id="regVoterId" placeholder="Admission Number">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user" id="regEmail" placeholder="Email Address">
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <input type="password" class="form-control form-control-user" id="regPassword" placeholder="Password">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <input type="password" class="form-control form-control-user" id="regConfirmPassword" placeholder="Confirm Password">
-                                            </div>
-                                        </div>
-                                        <button type="button" id="registerBtn" class="btn btn-primary btn-user btn-block">Create Account</button>
-                                    </form>
-                                    
-                                    <!-- Forgot Password Form -->
-                                    <form id="forgotPasswordForm" class="user" style="display: none;">
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user" id="resetEmail" placeholder="Enter Your Email Address">
-                                        </div>
-                                        <button type="button" id="sendResetBtn" class="btn btn-primary btn-user btn-block">Send Reset Link</button>
-                                        <hr>
-                                        <div class="text-center">
-                                            <a class="small" href="#" id="backToLoginBtn">Back to Login</a>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#8B0000] rounded-full flex items-center justify-center">
+                        <i class="fas fa-university text-white text-lg"></i>
                     </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">IUEA <span class="text-[#8B0000]">VoteHub</span></h1>
+                        <p class="text-xs text-gray-500">Blockchain Voting System</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 items-center">
+                    <a href="about.html" class="text-gray-600 hover:text-[#8B0000] transition">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-md p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-[#8B0000] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-university text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Welcome Back</h2>
+                <p class="text-gray-500 text-sm mt-1">Login to access your voting dashboard</p>
+                <div class="flex justify-center mt-3">
+                    <span class="bg-[#8B0000]/10 text-[#8B0000] text-xs px-3 py-1 rounded-full">
+                        <i class="fas fa-link mr-1"></i> Blockchain Secured
+                    </span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Admission Number</label>
+                    <input type="text" id="loginVoterId" placeholder="e.g., IUEA-2025-1234" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000] focus:border-[#8B0000]">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8B0000] focus:border-[#8B0000]">
+                </div>
+                <div class="text-right">
+                    <a href="forgot-password.html" class="text-sm text-[#8B0000] hover:underline">Forgot Password?</a>
+                </div>
+                <button id="loginBtn" class="w-full btn-maroon text-white py-2 rounded-lg font-semibold">Login</button>
+                
+                <div class="text-center mt-4">
+                    <p class="text-sm text-gray-500">Don't have an account? <a href="register.html" class="text-[#8B0000] hover:underline">Register here</a></p>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="blockchain-badge">
-        <i class="fas fa-link"></i> Blockchain Secured | Immutable | Transparent
-    </div>
-    
-    <div id="toastContainer"></div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="js/sb-admin-2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2026 International University of East Africa. All rights reserved. | Learning to Succeed</p>
+        </div>
+    </footer>
+
     <script>
-        emailjs.init("AKON5I-qdSpvPbsaj");
-        
         const API_BASE = '/api';
-        let authToken = localStorage.getItem('auth_token');
-        
-        function showToast(message, isError = false) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast bg-white border-left-' + (isError ? 'danger' : 'success');
-            toast.style.borderLeft = isError ? '4px solid #dc2626' : '4px solid #8B0000';
-            toast.innerHTML = `
-                <div class="toast-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <i class="fas ${isError ? 'fa-exclamation-triangle text-danger' : 'fa-check-circle text-primary'} mr-2"></i>
-                        ${message}
-                    </div>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
-                </div>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        }
-        
-        async function apiCall(endpoint, method = 'GET', data = null) {
-            const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
-            if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                method, headers, body: data ? JSON.stringify(data) : null
-            });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Request failed');
-            }
-            return response.json();
-        }
         
         async function login() {
             const voter_id = document.getElementById('loginVoterId').value;
             const password = document.getElementById('loginPassword').value;
             
-            try {
-                const result = await apiCall('/login', 'POST', { voter_id, password });
-                authToken = result.token;
-                localStorage.setItem('auth_token', authToken);
-
-                const voter = result.voter;
-                if (!voter.full_name && voter.first_name && voter.last_name) {
-                    voter.full_name = voter.first_name + ' ' + voter.last_name;
-                }
-                if (!voter.full_name) {
-                    voter.full_name = voter.voter_id || 'Voter';
-                }
-
-                localStorage.setItem('voter_name', voter.full_name);
-                localStorage.setItem('voter_id', voter.voter_id || '');
-
-                showToast(`Welcome ${voter.full_name}!`);
-                setTimeout(() => { window.location.href = 'voting-dashboard.html'; }, 1000);
-            } catch (error) {
-                showToast(error.message, true);
+            if (!voter_id || !password) {
+                alert('Please enter both admission number and password');
+                return;
             }
-        }
-
-        async function register() {
-            const first_name = document.getElementById('regFirstName').value;
-            const last_name = document.getElementById('regLastName').value;
-            const voter_id = document.getElementById('regVoterId').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const password_confirmation = document.getElementById('regConfirmPassword').value;
-
-            if (password !== password_confirmation) return showToast('Passwords do not match', true);
-
+            
             try {
-                await apiCall('/register', 'POST', { first_name, last_name, voter_id, email, password, password_confirmation });
-                showToast('Registration successful! Please login.');
-                document.getElementById('loginTab').click();
-            } catch (error) {
-                showToast(error.message, true);
-            }
-        }
-
-        async function sendResetLink() {
-            const email = document.getElementById('resetEmail').value;
-            try {
-                const response = await fetch(`${API_BASE}/forgot-password`, {
+                const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ voter_id, password })
                 });
+                
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.message);
-                await emailjs.send('service_uixgfye', 'password_reset', {
-                    to_email: email, to_name: email.split('@')[0],
-                    reset_link: data.reset_link, message: `Reset your password: ${data.reset_link}`
-                });
-                showToast('Reset link sent to your email!');
-                document.getElementById('backToLoginBtn').click();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Invalid credentials');
+                }
+                
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('voter_name', data.voter.full_name);
+                localStorage.setItem('voter_id', data.voter.voter_id);
+                localStorage.setItem('voter_email', data.voter.email);
+                
+                // Redirect to About page first (as requested)
+                window.location.href = 'about.html';
+                
             } catch (error) {
-                showToast(error.message, true);
+                alert(error.message);
             }
         }
         
-        document.getElementById('loginTab').onclick = (e) => {
-            e.preventDefault();
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('forgotPasswordForm').style.display = 'none';
-            document.getElementById('loginTab').className = 'btn btn-outline-primary active';
-            document.getElementById('registerTab').className = 'btn btn-outline-secondary';
-        };
-        document.getElementById('registerTab').onclick = (e) => {
-            e.preventDefault();
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-            document.getElementById('forgotPasswordForm').style.display = 'none';
-            document.getElementById('registerTab').className = 'btn btn-outline-primary active';
-            document.getElementById('loginTab').className = 'btn btn-outline-secondary';
-        };
-        document.getElementById('forgotPasswordBtn').onclick = (e) => {
-            e.preventDefault();
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('forgotPasswordForm').style.display = 'block';
-        };
-        document.getElementById('backToLoginBtn').onclick = (e) => {
-            e.preventDefault();
-            document.getElementById('loginTab').click();
-        };
-        document.getElementById('loginBtn').onclick = login;
-        document.getElementById('registerBtn').onclick = register;
-        document.getElementById('sendResetBtn').onclick = sendResetLink;
+        document.getElementById('loginBtn').addEventListener('click', login);
         
-        if (authToken) window.location.href = 'voting-dashboard.html';
+        // If already logged in, go to About page
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'about.html';
+        }
     </script>
 </body>
 

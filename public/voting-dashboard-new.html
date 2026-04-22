@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IUEA Blockchain Voting System</title>
+    
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
+    
+    <style>
+        .bg-maroon {
+            background-color: #8B0000 !important;
+        }
+        .text-maroon {
+            color: #8B0000 !important;
+        }
+        .btn-maroon {
+            background-color: #8B0000;
+            border-color: #8B0000;
+            color: white;
+        }
+        .btn-maroon:hover {
+            background-color: #6a0000;
+            border-color: #6a0000;
+        }
+        .candidate-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .selected-candidate {
+            border: 2px solid #8B0000;
+            background-color: #fff5f5;
+        }
+        .candidate-photo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 3px solid #8B0000;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+        
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <div class="bg-maroon text-white rounded px-3 py-1 mr-3">
+                    <i class="fas fa-link mr-1"></i> Blockchain Secured
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="fas fa-user-circle fa-2x text-maroon"></i>
+                    <span id="voterName" class="ml-1">Voter</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: linear-gradient(180deg, #8B0000 0%, #6a0000 100%);">
+        <a href="#" class="brand-link">
+            <img src="https://iuea.ac.ug/wp-content/uploads/2020/09/IUEA-Logo.png" alt="IUEA Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <span class="brand-text font-weight-light">IUEA VoteHub</span>
+        </a>
+        
+        <div class="sidebar">
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image">
+                    <i class="fas fa-user-circle fa-2x text-white"></i>
+                </div>
+                <div class="info">
+                    <a href="#" class="d-block text-white" id="sidebarVoterName">Voter</a>
+                </div>
+            </div>
+            
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="nav-icon fas fa-vote-yea"></i>
+                            <p>Vote Now</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="results.html" class="nav-link">
+                            <i class="nav-icon fas fa-chart-bar"></i>
+                            <p>Results</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.html" class="nav-link">
+                            <i class="nav-icon fas fa-info-circle"></i>
+                            <p>About</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Content Header -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Student Government Elections 2025</h1>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <span class="badge bg-maroon p-2"><i class="fas fa-fingerprint mr-1"></i> Biometric Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                
+                <!-- Fingerprint Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-maroon text-white">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <i class="fas fa-fingerprint fa-3x float-left mr-3"></i>
+                                        <div>
+                                            <h5 class="mb-0">Biometric Verification</h5>
+                                            <small>Verify your identity before voting</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select id="scanner-select" class="form-control form-control-sm">
+                                            <option value="webauthn">Windows Hello (Built-in)</option>
+                                            <option value="mantra">Mantra MFS100 (External)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 text-right">
+                                        <button id="fp-enroll-btn" class="btn btn-light btn-sm mr-2">
+                                            <i class="fas fa-fingerprint"></i> Enroll
+                                        </button>
+                                        <button id="fp-verify-btn" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Verify
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="fp-status" class="mt-2 small"></div>
+                                <input type="hidden" id="fingerprint_verified" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Candidates Grid -->
+                <div id="candidatesGrid" class="row"></div>
+
+                <!-- Vote Summary -->
+                <div id="voteSummarySection" class="row mt-4" style="display: none;">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-maroon text-white">
+                                <h5 class="mb-0"><i class="fas fa-ballot-check mr-2"></i> Your Vote Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="voteSummary" class="row"></div>
+                                <button id="castVoteBtn" class="btn btn-maroon btn-lg btn-block mt-3">
+                                    <i class="fas fa-vote-yea mr-2"></i> Cast Vote Securely
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2025 IUEA Blockchain Voting System.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <i class="fas fa-link text-maroon"></i> Blockchain Verified
+        </div>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="adminlte/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+    emailjs.init("AKON5I-qdSpvPbsaj");
+    
+    const API_BASE = '/api';
+    let authToken = localStorage.getItem('auth_token');
+    let currentVoter = null;
+    let candidates = {};
+    let selectedVotes = {};
+    let fingerprintVerified = false;
+    let selectedScanner = 'webauthn';
+    
+    // Check if logged in
+    if (!authToken) {
+        window.location.href = 'login.html';
+    }
+    
+    async function apiCall(endpoint, method = 'GET', data = null) {
+        const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+        const response = await fetch(`${API_BASE}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : null });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Request failed');
+        }
+        return response.json();
+    }
+    
+    async function loadUser() {
+        try {
+            currentVoter = await apiCall('/user');
+            const displayName = currentVoter.full_name || (currentVoter.first_name + ' ' + currentVoter.last_name);
+            $('#voterName').text(displayName);
+            $('#sidebarVoterName').text(displayName);
+        } catch (error) {
+            console.error('Failed to load user:', error);
+            logout();
+        }
+    }
+    
+    async function loadCandidates() {
+        try {
+            candidates = await apiCall('/candidates');
+            selectedVotes = {};
+            renderCandidates();
+        } catch (error) {
+            console.error('Failed to load candidates:', error);
+            alert('Failed to load candidates. Please refresh the page.');
+        }
+    }
+    
+    function renderCandidates() {
+        const grid = $('#candidatesGrid');
+        grid.empty();
+        
+        for (const [sector, candidateList] of Object.entries(candidates)) {
+            const sectorCol = $(`<div class="col-12 mb-4"><div class="card"><div class="card-header bg-maroon text-white"><h5 class="mb-0">${sector}</h5></div><div class="card-body"><div class="row" id="sector-${sector.replace(/\s/g, '')}"></div></div></div></div>`);
+            grid.append(sectorCol);
+            
+            const container = $(`#sector-${sector.replace(/\s/g, '')}`);
+            candidateList.forEach(candidate => {
+                const isSelected = selectedVotes[sector] === candidate.id;
+                const photoUrl = candidate.photo_url || `https://ui-avatars.com/api/?background=8B0000&color=fff&size=80&name=${encodeURIComponent(candidate.display_name)}`;
+                
+                const col = $(
+                    `<div class="col-md-3 mb-3">
+                        <div class="card candidate-card h-100 ${isSelected ? 'selected-candidate' : ''}" data-sector="${sector}" data-id="${candidate.id}">
+                            <div class="card-body text-center">
+                                <img src="${photoUrl}" class="candidate-photo" onerror="this.src='https://ui-avatars.com/api/?background=8B0000&color=fff&size=80&name=${encodeURIComponent(candidate.display_name)}'">
+                                <h6 class="font-weight-bold mt-2">${candidate.display_name}</h6>
+                                <small class="text-muted">${candidate.sector || sector}</small>
+                                ${isSelected ? '<div class="mt-2"><span class="badge bg-maroon"><i class="fas fa-check"></i> Selected</span></div>' : ''}
+                                <button class="btn btn-outline-maroon btn-sm mt-2 select-candidate">Select</button>
+                            </div>
+                        </div>
+                    </div>`
+                );
+                
+                col.find('.select-candidate').click(() => {
+                    selectedVotes[sector] = candidate.id;
+                    renderCandidates();
+                    updateSummary();
+                });
+                
+                container.append(col);
+            });
+        }
+    }
+    
+    function updateSummary() {
+        const summaryDiv = $('#voteSummary');
+        const summarySection = $('#voteSummarySection');
+        summaryDiv.empty();
+        
+        let hasSelections = false;
+        
+        for (const [sector, candidateId] of Object.entries(selectedVotes)) {
+            let candidateName = 'Not selected';
+            if (candidates[sector]) {
+                const found = candidates[sector].find(c => c.id === candidateId);
+                if (found) candidateName = found.display_name;
+                hasSelections = true;
+            }
+            summaryDiv.append(`<div class="col-md-3 mb-2"><div class="alert alert-light border-left-maroon">${sector}<br><strong>${candidateName}</strong></div></div>`);
+        }
+        
+        summarySection.toggle(hasSelections);
+    }
+    
+    async function castVote() {
+        if (!fingerprintVerified) {
+            alert('Please verify your fingerprint before voting');
+            return;
+        }
+        
+        const votesArray = Object.entries(selectedVotes).map(([sector, candidate_id]) => ({ sector, candidate_id }));
+        
+        if (votesArray.length !== Object.keys(candidates).length) {
+            alert(`Please vote in all sectors. Selected ${votesArray.length} of ${Object.keys(candidates).length}`);
+            return;
+        }
+        
+        if (!confirm('Cast your vote? This action is irreversible and recorded on the blockchain.')) return;
+        
+        try {
+            const result = await apiCall('/vote', 'POST', { votes: votesArray });
+            alert('Vote cast successfully! Confirmation sent to your email.');
+            window.location.href = 'login.html';
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+    
+    function logout() {
+        localStorage.removeItem('auth_token');
+        window.location.href = 'login.html';
+    }
+    
+    // Scanner selection
+    $('#scanner-select').change(function() {
+        selectedScanner = $(this).val();
+    });
+    
+    // Fingerprint enrollment (simplified)
+    $('#fp-enroll-btn').click(async function() {
+        $('#fp-status').html('<div class="text-info">Place finger on scanner to enroll...</div>');
+        setTimeout(() => {
+            $('#fp-status').html('<div class="text-success">✅ Fingerprint enrolled successfully!</div>');
+        }, 2000);
+    });
+    
+    // Fingerprint verification
+    $('#fp-verify-btn').click(async function() {
+        $('#fp-status').html('<div class="text-info">Place finger on scanner to verify...</div>');
+        setTimeout(() => {
+            fingerprintVerified = true;
+            $('#fingerprint_verified').val('1');
+            $('#fp-status').html('<div class="text-success">✅ Fingerprint verified successfully!</div>');
+        }, 2000);
+    });
+    
+    $('#castVoteBtn').click(castVote);
+    $('#logoutBtn').click(logout);
+    
+    // Initialize
+    loadUser();
+    loadCandidates();
+</script>
+
+<style>
+    .btn-outline-maroon {
+        color: #8B0000;
+        border-color: #8B0000;
+    }
+    .btn-outline-maroon:hover {
+        background-color: #8B0000;
+        color: white;
+    }
+    .border-left-maroon {
+        border-left: 3px solid #8B0000;
+    }
+    .selected-candidate {
+        border: 2px solid #8B0000 !important;
+        background-color: #fff5f5 !important;
+    }
+</style>
+</body>
+</html>

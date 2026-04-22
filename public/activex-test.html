@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ActiveX Test</title>
+</head>
+<body>
+    <h2>ActiveX Test</h2>
+    <button onclick="testActiveX()">Test ActiveX</button>
+    <div id="result"></div>
+    
+    <script>
+        function testActiveX() {
+            try {
+                var mantra = new ActiveXObject("MFS100.MFS100Ctrl.1");
+                document.getElementById('result').innerHTML = '✅ Mantra ActiveX found!';
+            } catch(e) {
+                document.getElementById('result').innerHTML = '❌ Error: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>

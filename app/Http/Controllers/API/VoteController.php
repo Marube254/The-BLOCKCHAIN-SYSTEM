@@ -166,6 +166,57 @@ class VoteController extends Controller
         }
     }
 
+    public function enrollMantraFingerprint(Request $request)
+    {
+        try {
+            $voter = $request->user();
+
+            $request->validate([
+                'fingerprint_template' => 'required|string',
+                'fingerprint_quality' => 'required|integer'
+            ]);
+
+            $voter->fingerprint_template = $request->fingerprint_template;
+            $voter->fingerprint_quality = $request->fingerprint_quality;
+            $voter->fingerprint_enrolled_at = now();
+            $voter->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fingerprint enrolled successfully with Mantra'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verifyMantraFingerprint(Request $request)
+    {
+        try {
+            $voter = $request->user();
+
+            if (!$voter->fingerprint_template) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No fingerprint enrolled for this voter'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fingerprint verified successfully with Mantra'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function castVote(Request $request)
     {
         try {

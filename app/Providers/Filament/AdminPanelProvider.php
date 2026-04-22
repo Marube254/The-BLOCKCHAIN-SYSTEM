@@ -26,8 +26,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->defaultThemeMode(ThemeMode::System)
-            ->darkMode(true)
+            ->defaultThemeMode(ThemeMode::Light)
+            ->darkMode(false)
             ->colors([
                 'primary' => '#8B0000',
                 'danger' => '#dc2626',
@@ -78,8 +78,8 @@ class AdminPanelProvider extends PanelProvider
                 '
             )
             ->renderHook(
-                'panels::head.end',
-                fn () => view('components.admin-styles') . '<link rel="stylesheet" href="' . asset('css/admin-custom.css') . '">',
+                'panels::head.start',
+                fn (): string => '<link href="' . asset('css/admin-custom.css') . '" rel="stylesheet" />'
             );
     }
 }

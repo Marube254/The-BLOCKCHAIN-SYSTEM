@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('sectors', function (Blueprint $table) {
             $table->id();
-            $table->string('sector_name')->unique();
+            $table->string('name');
             $table->string('sector_code')->unique();
             $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->integer('max_candidates')
                 ->default(1)
                 ->comment('How many candidates can stand for this sector');

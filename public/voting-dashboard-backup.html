@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>IUEA Voting System | Vote Dashboard</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        .bg-gradient-primary { background: linear-gradient(180deg, #8B0000 0%, #6a0000 100%) !important; }
+        .btn-primary { background-color: #8B0000 !important; border-color: #8B0000 !important; }
+        .btn-primary:hover { background-color: #6a0000 !important; }
+        .text-primary { color: #8B0000 !important; }
+        .candidate-card { transition: all 0.3s ease; cursor: pointer; }
+        .candidate-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .selected { border: 2px solid #8B0000; background: #fff5f5; }
+        .candidate-photo { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin: 0 auto 15px; border: 3px solid #8B0000; }
+        .toast { position: fixed; bottom: 20px; right: 20px; z-index: 9999; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .selected-badge { position: absolute; top: 10px; right: 10px; background: #8B0000; color: white; border-radius: 20px; padding: 2px 10px; font-size: 12px; }
+
+        .sidebar-brand {
+            background: white !important;
+            margin: 15px !important;
+            border-radius: 12px !important;
+            padding: 12px !important;
+        }
+
+        .sidebar-brand img {
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" style="background: white; margin: 15px; border-radius: 12px; padding: 10px;">
+                <img src="images/iuea-logo.png" alt="IUEA" style="height: 40px; width: auto; margin-right: 8px;">
+                <div>
+                    <div class="sidebar-brand-text" style="color: #8B0000; font-weight: bold; font-size: 14px;">
+                        
+                    </div>
+                    <div class="sidebar-brand-text" style="color: #8B0000; font-weight: bold; font-size: 12px;"></div>
+                </div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item active"><a class="nav-link" href="#"><i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Election Info</div>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-fw fa-link"></i><span>Blockchain Verified</span></a></li>
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline"><button class="rounded-circle border-0" id="sidebarToggle"></button></div>
+        </ul>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3"><i class="fa fa-bars"></i></button>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="voterName">Loading...</span>
+                                <i class="fas fa-user-circle fa-2x text-gray-300"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Student Government Elections 2026</h1>
+                        <div class="badge bg-primary text-white p-2"><i class="fas fa-link mr-1"></i> Blockchain Secured</div>
+                    </div>
+
+                    <div id="loadingSpinner" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Loading candidates...</p></div>
+                    <div id="candidatesContainer"></div>
+
+                    <!-- Fingerprint Biometric Verification Section -->
+                    <div id="fingerprintSection" class="card shadow mb-4" style="background: linear-gradient(135deg, #8B0000 0%, #6a0000 100%); color: #ffffff;">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-fingerprint fa-3x text-white mb-2"></i>
+                                <h3 class="font-weight-bold text-white">Biometric Verification</h3>
+                                <p class="text-white-50 small">Verify your identity before voting</p>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="scanner-select" class="text-white small font-weight-bold">Select Fingerprint Scanner</label>
+                                <select id="scanner-select" class="form-control">
+                                    <option value="webauthn">Windows Hello (Built-in Scanner)</option>
+                                    <option value="mantra">Mantra MFS100 (External USB)</option>
+                                </select>
+                            </div>
+
+                            <div id="fp-status" style="display:none;" class="text-center p-2 mt-2 rounded"></div>
+
+                            <div class="d-flex" style="gap: 1rem;">
+                                <button id="fp-enroll-btn" class="btn btn-primary btn-block">
+                                    <i class="fas fa-fingerprint mr-2"></i> Enroll Fingerprint
+                                </button>
+                                <button id="fp-verify-btn" class="btn btn-success btn-block">
+                                    <i class="fas fa-check-circle mr-2"></i> Verify Fingerprint
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="fingerprint_verified" value="0">
+                        </div>
+                    </div>
+
+                    <div id="voteSummary" class="card shadow mb-4" style="display: none;">
+                        <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Your Vote Summary</h6></div>
+                        <div class="card-body">
+                            <div id="summaryGrid" class="row"></div>
+                            <button id="castVoteBtn" class="btn btn-primary btn-block mt-3">Cast Vote Securely <i class="fas fa-arrow-right ml-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="sticky-footer bg-white"><div class="container my-auto"><div class="copyright text-center my-auto"><span>© 2026 IUEA Blockchain Voting System | Immutable • Transparent • Secure</span></div></div></footer>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        emailjs.init("AKON5I-qdSpvPbsaj");
+        const API_BASE = '/api';
+        let authToken = localStorage.getItem('auth_token');
+        let currentVoter = null;
+        let candidates = {};
+        let selectedVotes = {};
+        let selectedScanner = 'webauthn';
+        let mantraScanner = null;
+        let fingerprintVerified = false;
+        
+        if (!authToken) window.location.href = 'login.html';
+        
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast bg-white';
+            toast.style.borderLeft = isError ? '4px solid #dc2626' : '4px solid #8B0000';
+            toast.innerHTML = `<div class="toast-body"><i class="fas ${isError ? 'fa-exclamation-triangle text-danger' : 'fa-check-circle text-primary'} mr-2"></i>${message}<button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button></div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function setFpStatus(statusDiv, html, bgColor, color = '#ffffff') {
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'text-center p-2 mt-2 rounded';
+            statusDiv.style.backgroundColor = bgColor;
+            statusDiv.style.color = color;
+            statusDiv.innerHTML = html;
+        }
+
+        async function initMantraScanner() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = 'Connecting to Mantra MFS100...';
+
+            try {
+                if (typeof MantraMFS100 === 'undefined') {
+                    throw new Error('MantraMFS100 SDK is not available');
+                }
+                mantraScanner = new MantraMFS100();
+                const connected = await mantraScanner.connect();
+                if (connected) {
+                    statusDiv.innerHTML = '✅ Mantra MFS100 connected and ready';
+                    setFpStatus(statusDiv, '✅ Mantra MFS100 connected and ready', '#28a745');
+                } else {
+                    setFpStatus(statusDiv, '⚠️ Mantra MFS100 not detected. Please check connection.', '#ffc107');
+                }
+            } catch (error) {
+                setFpStatus(statusDiv, '❌ Mantra connection failed: ' + (error.message || 'Unknown error'), '#dc3545');
+            }
+        }
+
+        async function checkWebAuthnSupport() {
+            if (!window.PublicKeyCredential) {
+                showToast('WebAuthn not supported in this browser. Please use Chrome or Edge.', true);
+                return false;
+            }
+            const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+            if (!available) {
+                showToast('No fingerprint scanner detected. Please set up Windows Hello.', true);
+                return false;
+            }
+            return true;
+        }
+
+        async function enrollFingerprint() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+
+            if (selectedScanner === 'webauthn') {
+                const supported = await checkWebAuthnSupport();
+                if (!supported) return;
+
+                statusDiv.className = 'text-center p-2 mt-2 rounded bg-blue-500 text-white';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on scanner to enroll...';
+
+                try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const voterId = currentVoter.id ? currentVoter.id.toString() : 'voter-' + Date.now();
+                    const voterName = currentVoter.email || 'voter@iuea.ac.ug';
+                    const voterDisplayName = currentVoter.full_name || (currentVoter.first_name + ' ' + currentVoter.last_name) || 'IUEA Voter';
+
+                    const publicKeyCredentialCreationOptions = {
+                        challenge: challenge,
+                        rp: {
+                            name: 'IUEA Voting System',
+                            id: window.location.hostname
+                        },
+                        user: {
+                            id: new TextEncoder().encode(voterId),
+                            name: voterName,
+                            displayName: voterDisplayName
+                        },
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            userVerification: 'required'
+                        },
+                        timeout: 60000,
+                        attestation: 'none'
+                    };
+
+                    console.log('WebAuthn options:', publicKeyCredentialCreationOptions);
+
+                    const credential = await navigator.credentials.create({
+                        publicKey: publicKeyCredentialCreationOptions
+                    });
+
+                    const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+
+                    const response = await fetch('/api/enroll-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ credential_id: credentialId })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        statusDiv.className = 'text-center p-2 mt-2 rounded bg-green-500 text-white';
+                        statusDiv.innerHTML = '<i class="fas fa-check-circle mr-1"></i> ' + result.message;
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    console.error('WebAuthn enrollment error:', error);
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-red-500 text-white';
+                    statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Enrollment failed: ' + error.message;
+                }
+            } else {
+                if (!mantraScanner || !mantraScanner.isConnected) {
+                    await initMantraScanner();
+                    if (!mantraScanner || !mantraScanner.isConnected) {
+                        setFpStatus(statusDiv, 'Mantra scanner not connected', '#dc3545');
+                        return;
+                    }
+                }
+
+                setFpStatus(statusDiv, '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on Mantra scanner...', '#007bff');
+
+                try {
+                    const result = await mantraScanner.capture();
+                    const response = await fetch('/api/enroll-mantra-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ fingerprint_template: result.template, fingerprint_quality: result.quality })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        setFpStatus(statusDiv, '<i class="fas fa-check-circle mr-1"></i> ' + data.message, '#28a745');
+                    } else {
+                        throw new Error(data.message || 'Enrollment failed');
+                    }
+                } catch (error) {
+                    setFpStatus(statusDiv, '<i class="fas fa-exclamation-triangle mr-1"></i> ' + (error.message || 'Unknown error'), '#dc3545');
+                }
+            }
+        }
+
+        async function verifyFingerprint() {
+            const statusDiv = document.getElementById('fp-status');
+            statusDiv.style.display = 'block';
+
+            if (selectedScanner === 'webauthn') {
+                const storedCredentialId = await getStoredCredentialId();
+                if (!storedCredentialId) {
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-yellow-500 text-white';
+                    statusDiv.innerHTML = 'No fingerprint enrolled. Please click "Enroll Fingerprint" first.';
+                    return;
+                }
+
+                statusDiv.className = 'text-center p-2 mt-2 rounded bg-blue-500 text-white';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on scanner to verify...';
+
+                try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const publicKeyCredentialRequestOptions = {
+                        challenge: challenge,
+                        timeout: 60000,
+                        rpId: window.location.hostname,
+                        userVerification: 'required',
+                        allowCredentials: [{
+                            id: base64ToArrayBuffer(storedCredentialId),
+                            type: 'public-key'
+                        }]
+                    };
+
+                    console.log('WebAuthn verification options:', publicKeyCredentialRequestOptions);
+
+                    const assertion = await navigator.credentials.get({
+                        publicKey: publicKeyCredentialRequestOptions
+                    });
+
+                    if (assertion) {
+                        fingerprintVerified = true;
+                        document.getElementById('fingerprint_verified').value = '1';
+                        statusDiv.className = 'text-center p-2 mt-2 rounded bg-green-500 text-white';
+                        statusDiv.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Fingerprint verified successfully!';
+                        showToast('Fingerprint verified! You can now vote.');
+                    }
+                } catch (error) {
+                    console.error('WebAuthn verification error:', error);
+                    statusDiv.className = 'text-center p-2 mt-2 rounded bg-red-500 text-white';
+                    statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Verification failed: ' + (error.message || 'Unknown error');
+                    fingerprintVerified = false;
+                    document.getElementById('fingerprint_verified').value = '0';
+                }
+            } else {
+                if (!mantraScanner || !mantraScanner.isConnected) {
+                    await initMantraScanner();
+                    if (!mantraScanner || !mantraScanner.isConnected) {
+                        setFpStatus(statusDiv, 'Mantra scanner not connected', '#dc3545');
+                        return;
+                    }
+                }
+
+                setFpStatus(statusDiv, '<i class="fas fa-spinner fa-spin mr-1"></i> Place finger on Mantra scanner...', '#007bff');
+
+                try {
+                    const result = await mantraScanner.capture();
+                    const response = await fetch('/api/verify-mantra-fingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                        body: JSON.stringify({ matched: true, template: result.template })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        fingerprintVerified = true;
+                        document.getElementById('fingerprint_verified').value = '1';
+                        setFpStatus(statusDiv, '<i class="fas fa-check-circle mr-1"></i> ' + data.message, '#28a745');
+                    } else {
+                        throw new Error(data.message || 'Verification failed');
+                    }
+                } catch (error) {
+                    fingerprintVerified = false;
+                    document.getElementById('fingerprint_verified').value = '0';
+                    setFpStatus(statusDiv, '<i class="fas fa-exclamation-triangle mr-1"></i> ' + (error.message || 'Unknown error'), '#dc3545');
+                }
+            }
+        }
+
+        async function getStoredCredentialId() {
+            try {
+                const response = await fetch('/api/voter-fingerprint', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                return data.credential_id;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` };
+            const response = await fetch(`${API_BASE}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : null });
+            if (!response.ok) { const error = await response.json(); throw new Error(error.message); }
+            return response.json();
+        }
+        
+        function getVoterDisplayName(voter) {
+            if (!voter) return 'Voter';
+            const fullName = voter.full_name || `${(voter.first_name || '').trim()} ${(voter.last_name || '').trim()}`.trim();
+            return fullName || voter.voter_id || 'Voter';
+        }
+
+        function updateVoterNameElement() {
+            const voterNameElement = document.getElementById('voterName');
+            if (voterNameElement && currentVoter) {
+                voterNameElement.innerText = getVoterDisplayName(currentVoter);
+            }
+        }
+
+        async function loadUser() {
+            try {
+                currentVoter = await apiCall('/user');
+                if (!currentVoter.full_name && currentVoter.first_name && currentVoter.last_name) {
+                    currentVoter.full_name = `${currentVoter.first_name} ${currentVoter.last_name}`;
+                }
+                if (!currentVoter.full_name) {
+                    currentVoter.full_name = currentVoter.voter_id || 'Voter';
+                }
+                updateVoterNameElement();
+            } catch (error) {
+                console.error('Failed to load user:', error);
+                logout();
+            }
+        }
+
+        async function loadCandidates() {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            if (loadingSpinner) loadingSpinner.style.display = 'flex';
+            try {
+                candidates = await apiCall('/candidates');
+                selectedVotes = {};
+                renderCandidates();
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+            } catch (error) {
+                console.error('Failed to load candidates:', error);
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                showToast('Failed to load candidates. Please refresh the page.', true);
+            }
+        }
+
+        function renderCandidates() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            const container = document.getElementById('candidatesContainer');
+            container.innerHTML = '';
+            for (const [sector, list] of Object.entries(candidates)) {
+                const sectorCard = document.createElement('div'); sectorCard.className = 'card shadow mb-4';
+                sectorCard.innerHTML = `<div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">${sector}</h6></div><div class="card-body"><div class="row" id="sector-${sector.replace(/\s/g, '')}"></div></div>`;
+                container.appendChild(sectorCard);
+                const row = document.getElementById(`sector-${sector.replace(/\s/g, '')}`);
+                list.forEach(c => {
+                    const isSelected = selectedVotes[sector] === c.id;
+                    const photoUrl = c.photo_url ? c.photo_url : `https://ui-avatars.com/api/?background=8B0000&color=fff&size=100&name=${encodeURIComponent(c.display_name)}`;
+                    const col = document.createElement('div'); col.className = 'col-lg-4 col-md-6 mb-4';
+                    col.innerHTML = `<div class="card candidate-card h-100 text-center p-3 ${isSelected ? 'selected' : ''}" data-sector="${sector}" data-id="${c.id}">
+                        <div class="position-relative"><img src="${photoUrl}" class="candidate-photo" onerror="this.src='https://ui-avatars.com/api/?background=8B0000&color=fff&size=100&name=${encodeURIComponent(c.display_name)}'">${isSelected ? '<div class="selected-badge"><i class="fas fa-check"></i> Selected</div>' : ''}</div>
+                        <h5 class="mt-2">${c.display_name}</h5>
+                        <p class="text-muted small">${c.sector}</p>
+                        <div class="mt-auto"><button class="btn btn-sm btn-outline-primary select-candidate" data-sector="${sector}" data-id="${c.id}">Select Candidate</button></div>
+                    </div>`;
+                    row.appendChild(col);
+                });
+            }
+            document.querySelectorAll('.select-candidate').forEach(btn => {
+                btn.onclick = () => { selectedVotes[btn.dataset.sector] = parseInt(btn.dataset.id); renderCandidates(); updateSummary(); showToast(`Selected ${btn.closest('.card').querySelector('h5').innerText}`); };
+            });
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summaryGrid');
+            const summaryCard = document.getElementById('voteSummary');
+            summaryDiv.innerHTML = '';
+            let hasSelections = false;
+            for (const [sector, id] of Object.entries(selectedVotes)) {
+                const name = candidates[sector]?.find(c => c.id === id)?.display_name || 'Selected';
+                summaryDiv.innerHTML += `<div class="col-md-3 mb-2"><div class="card bg-light"><div class="card-body py-2"><small><strong>${sector}</strong><br>${name}</small></div></div></div>`;
+                hasSelections = true;
+            }
+            summaryCard.style.display = hasSelections ? 'block' : 'none';
+        }
+        
+        async function castVote() {
+            if (currentVoter?.has_voted) return showToast('You have already voted!', true);
+            const fingerprintVerifiedValue = document.getElementById('fingerprint_verified')?.value === '1';
+            if (!fingerprintVerifiedValue) return showToast('Please verify your fingerprint before voting', true);
+            const votesArray = Object.entries(selectedVotes).map(([sector, candidate_id]) => ({ sector, candidate_id }));
+            if (votesArray.length !== Object.keys(candidates).length) return showToast(`Please vote in all sectors. Selected ${votesArray.length} of ${Object.keys(candidates).length}`, true);
+            if (!confirm('Cast your vote? This action is irreversible and recorded on the blockchain.')) return;
+            try {
+                const result = await apiCall('/vote', 'POST', { votes: votesArray });
+                const summary = Object.entries(selectedVotes).map(([sector, id]) => `${sector}: ${candidates[sector]?.find(c => c.id === id)?.display_name}`).join('\n');
+                await emailjs.send('service_uixgfye', 'Confirmation Receipt', { to_email: currentVoter.email, to_name: currentVoter.full_name, vote_summary: summary, transaction_hash: result.transaction_hash || 'Blockchain verified', voting_date: new Date().toLocaleString(), admission_number: currentVoter.voter_id });
+                showToast('Vote cast successfully! Confirmation sent to your email.');
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            } catch (error) { showToast(error.message, true); }
+        }
+        
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
+        
+        document.getElementById('logoutBtn').onclick = logout;
+        document.getElementById('scanner-select')?.addEventListener('change', function(e) {
+            selectedScanner = e.target.value;
+            showToast(`Switched to ${selectedScanner === 'webauthn' ? 'Windows Hello' : 'Mantra MFS100'} scanner`);
+            if (selectedScanner === 'mantra') {
+                initMantraScanner();
+            }
+        });
+        document.getElementById('fp-enroll-btn')?.addEventListener('click', enrollFingerprint);
+        document.getElementById('fp-verify-btn')?.addEventListener('click', verifyFingerprint);
+        document.getElementById('castVoteBtn').onclick = castVote;
+
+        if (authToken) {
+            (async () => {
+                try {
+                    currentVoter = await apiCall('/user');
+                    if (!currentVoter.full_name && currentVoter.first_name && currentVoter.last_name) {
+                        currentVoter.full_name = `${currentVoter.first_name} ${currentVoter.last_name}`;
+                    }
+                    if (!currentVoter.full_name) {
+                        currentVoter.full_name = currentVoter.voter_id || 'Voter';
+                    }
+                    updateVoterNameElement();
+                    await loadCandidates();
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    logout();
+                }
+            })();
+        }
+    </script>
+
+    <!-- Professional Footer -->
+    <footer class="bg-[#8B0000] text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            
+            <!-- Top Section - Centered Logo and Tagline -->
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-3">
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-university text-[#8B0000] text-2xl"></i>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight">IUEA <span class="text-white">VoteHub</span></h2>
+                <p class="text-white/80 text-sm mt-1">Blockchain-Powered Student Elections</p>
+            </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-white/20 my-6"></div>
+            
+            <!-- Main Footer Links - Centered Horizontal Layout -->
+            <div class="flex flex-wrap justify-center gap-x-12 gap-y-4 text-center">
+                <div>
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-2">Quick Links</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="text-white/70 hover:text-white text-sm transition">Vote Now</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white text-sm transition">View Results</a></li>
+                        <li><a href="about.html" class="text-white/70 hover:text-white text-sm transition">About Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-2">Legal</h3>
+                    <ul class="space-y-1">
+                        <li><a href="privacy.html" class="text-white/70 hover:text-white text-sm transition">Privacy Policy</a></li>
+                        <li><a href="terms.html" class="text-white/70 hover:text-white text-sm transition">Terms of Service</a></li>
+                        <li><a href="blockchain.html" class="text-white/70 hover:text-white text-sm transition">Blockchain</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-2">Support</h3>
+                    <ul class="space-y-1">
+                        <li><a href="faq.html" class="text-white/70 hover:text-white text-sm transition">FAQ</a></li>
+                        <li><a href="contact.html" class="text-white/70 hover:text-white text-sm transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-2">Connect</h3>
+                    <div class="flex gap-3 justify-center">
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white text-xs"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-twitter text-white text-xs"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-linkedin-in text-white text-xs"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white text-xs"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-white/20 my-6"></div>
+            
+            <!-- Tech Stack Row - Centered -->
+            <div class="flex flex-wrap justify-center gap-4 text-center">
+                <span class="inline-flex items-center gap-1 text-white/60 text-xs"><i class="fab fa-laravel"></i> Laravel</span>
+                <span class="inline-flex items-center gap-1 text-white/60 text-xs"><i class="fas fa-link"></i> SHA-256</span>
+                <span class="inline-flex items-center gap-1 text-white/60 text-xs"><i class="fas fa-fingerprint"></i> Biometric</span>
+                <span class="inline-flex items-center gap-1 text-white/60 text-xs"><i class="fas fa-database"></i> MySQL</span>
+                <span class="inline-flex items-center gap-1 text-white/60 text-xs"><i class="fas fa-envelope"></i> EmailJS</span>
+            </div>
+            
+            <!-- Blockchain Badge - Centered -->
+            <div class="flex justify-center mt-6">
+                <div class="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full">
+                    <i class="fas fa-link text-white/80 text-xs"></i>
+                    <span class="text-white/80 text-xs">Blockchain Verified | Immutable | Transparent</span>
+                </div>
+            </div>
+            
+            <!-- Copyright - Centered -->
+            <div class="text-center mt-6 pt-4 border-t border-white/20">
+                <p class="text-white/50 text-xs">© 2025 International University of East Africa. All rights reserved. | Learning to Succeed</p>
+                <p class="text-white/40 text-xs mt-1">Powered by Laravel | Blockchain SHA-256 | Filament Admin</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
