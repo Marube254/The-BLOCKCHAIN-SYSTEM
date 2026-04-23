@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - IUEA Blockchain Voting System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .bg-maroon { background-color: #8B0000; }
+        .faq-question { cursor: pointer; transition: all 0.3s ease; }
+        .faq-question:hover { color: #8B0000; }
+        .faq-answer { display: none; padding-left: 1rem; border-left: 3px solid #8B0000; margin-top: 0.5rem; margin-bottom: 1rem; }
+        .faq-question.active + .faq-answer { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <nav class="bg-white shadow-md py-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img src="images/iuea-logo.png" alt="IUEA Logo" class="h-12 w-auto">
+                    <h1 class="text-xl font-bold text-gray-800">VoteHub</h1>
+                </div>
+                <div class="flex gap-6 items-center">
+                    <a href="voting-dashboard.html" class="text-gray-600 hover:text-[#8B0000] transition">Vote</a>
+                    <a href="about.html" class="text-gray-600 hover:text-[#8B0000] transition">About</a>
+                    <button id="logoutBtn" class="text-gray-600 hover:text-[#8B0000] transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Frequently Asked Questions</h1>
+        <div class="w-20 h-1 bg-[#8B0000] mb-8"></div>
+        
+        <div class="space-y-4">
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>How do I register to vote?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    Click on "Register" on the login page. Enter your first name, last name, admission number, email, and create a password. After registration, you will receive a confirmation email.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>What is blockchain voting?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    Blockchain voting uses SHA-256 cryptographic hashing to secure each vote. Each vote is linked to the previous vote, creating an immutable chain that prevents tampering or alteration.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>Can I change my vote after submitting?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    No. Once a vote is cast and recorded on the blockchain, it is immutable and cannot be changed, altered, or deleted.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>Is my vote private?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    Yes. Your vote is encrypted and only the blockchain hash is stored. Your identity is not directly linked to your vote choice.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>What if I forget my password?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    Click "Forgot Password" on the login page. Enter your registered email address, and a password reset link will be sent to you.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>What browsers are supported?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    The system works best on Google Chrome, Microsoft Edge, and Firefox. For fingerprint verification, Chrome or Edge is recommended.
+                </div>
+            </div>
+            
+            <div>
+                <div class="faq-question font-semibold text-gray-800 text-lg py-3 border-b flex justify-between items-center">
+                    <span>How do I know my vote was counted?</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <div class="faq-answer text-gray-600 py-3">
+                    After voting, you receive an email confirmation with a unique transaction hash. You can use this hash to verify your vote was counted.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Footer Links Row -->
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-6">
+                <a href="privacy.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Privacy Policy</a>
+                <a href="terms.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Terms of Service</a>
+                <a href="blockchain.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Blockchain Verification</a>
+                <a href="faq.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">FAQ</a>
+                <a href="contact.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Contact</a>
+            </div>
+            
+            <!-- Logo and Credit Row -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-700">
+                <div class="flex items-center gap-3">
+                    <img src="images/iuea-logo.png" alt="IUEA Logo" class="h-8 w-auto">
+                    <span class="text-gray-500 text-xs">| Learning to Succeed</span>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500 text-xs">Created by <span class="text-[#8B0000]">Marube</span></p>
+                    <p class="text-gray-600 text-xs mt-1">&copy; 2026 International University of East Africa. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                question.classList.toggle('active');
+                const icon = question.querySelector('i');
+                if (icon) {
+                    icon.style.transform = question.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            });
+        });
+        
+        function logout() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('voter_name');
+            localStorage.removeItem('voter_id');
+            localStorage.removeItem('voter_email');
+            window.location.href = 'login.html';
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        if (!localStorage.getItem('auth_token')) window.location.href = 'login.html';
+    </script>
+</body>
+</html>
