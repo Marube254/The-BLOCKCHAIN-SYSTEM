@@ -293,7 +293,9 @@ class VoteController extends Controller
         
         return response()->json([
             'message' => 'Reset link sent',
-            'reset_link' => $resetLink
+            'reset_link' => $resetLink,
+            'voter_name' => trim($voter->first_name . ' ' . $voter->last_name),
+            'admission_number' => $voter->voter_id
         ]);
     }
 

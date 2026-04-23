@@ -23,22 +23,17 @@
 <body class="bg-gray-50">
 
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="bg-white shadow-md sticky top-0 z-50 py-3">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
+            <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-[#8B0000] rounded-full flex items-center justify-center">
-                        <i class="fas fa-university text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-800">IUEA <span class="text-[#8B0000]">VoteHub</span></h1>
-                        <p class="text-xs text-gray-500">Blockchain Voting System</p>
-                    </div>
+                    <img src="images/iuea-logo.png" alt="IUEA Logo" class="h-12 w-auto">
+                    <h1 class="text-xl font-bold text-gray-800">VoteHub</h1>
                 </div>
                 <div class="flex gap-6 items-center">
-                    <a href="voting-dashboard.html" class="text-gray-600 hover:text-[#8B0000] transition">Vote</a>
-                    <a href="about.html" class="text-[#8B0000] font-semibold">About</a>
-                    <button id="logoutBtn" class="text-gray-600 hover:text-[#8B0000] transition">
+                    <a href="voting-dashboard.html" class="text-gray-600 hover:text-[#8B0000] transition font-medium">Vote</a>
+                    <a href="about.html" class="text-gray-600 hover:text-[#8B0000] transition font-medium">About</a>
+                    <button id="logoutBtn" class="text-gray-600 hover:text-[#8B0000] transition ml-4">
                         <i class="fas fa-sign-out-alt mr-1"></i> Logout
                     </button>
                 </div>
@@ -137,83 +132,29 @@
         </div>
     </div>
 
-    <!-- Technology Section -->
-    <div class="bg-gray-100 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Powered by Blockchain Technology</h2>
-                <div class="w-20 h-1 bg-[#8B0000] mx-auto"></div>
-                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Every vote is secured using SHA-256 cryptographic hashing, creating an immutable and transparent ledger.</p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl p-6 text-center shadow-md team-card">
-                    <i class="fab fa-laravel text-3xl text-[#8B0000] mb-3"></i>
-                    <h4 class="font-semibold">Laravel</h4>
-                    <p class="text-xs text-gray-500 mt-1">PHP Framework</p>
-                </div>
-                <div class="bg-white rounded-xl p-6 text-center shadow-md team-card">
-                    <i class="fas fa-database text-3xl text-[#8B0000] mb-3"></i>
-                    <h4 class="font-semibold">MySQL</h4>
-                    <p class="text-xs text-gray-500 mt-1">Database</p>
-                </div>
-                <div class="bg-white rounded-xl p-6 text-center shadow-md team-card">
-                    <i class="fas fa-link text-3xl text-[#8B0000] mb-3"></i>
-                    <h4 class="font-semibold">SHA-256</h4>
-                    <p class="text-xs text-gray-500 mt-1">Blockchain Hashing</p>
-                </div>
-                <div class="bg-white rounded-xl p-6 text-center shadow-md team-card">
-                    <i class="fas fa-fingerprint text-3xl text-[#8B0000] mb-3"></i>
-                    <h4 class="font-semibold">Biometric</h4>
-                    <p class="text-xs text-gray-500 mt-1">Verification</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-10 h-10 bg-[#8B0000] rounded-full flex items-center justify-center">
-                            <i class="fas fa-university text-white text-sm"></i>
-                        </div>
-                        <span class="font-bold text-lg">IUEA VoteHub</span>
-                    </div>
-                    <p class="text-gray-400 text-sm">Blockchain-powered voting system for student government elections at the International University of East Africa.</p>
-                </div>
-                <div>
-                    <h3 class="text-[#8B0000] font-semibold mb-3">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="voting-dashboard.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition footer-link">Vote Now</a></li>
-                        <li><a href="about.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition footer-link">About Us</a></li>
-                        <li><a href="privacy.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition footer-link">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-[#8B0000] font-semibold mb-3">Technology</h3>
-                    <ul class="space-y-2">
-                        <li class="text-gray-400 text-sm"><i class="fab fa-laravel text-[#8B0000] mr-2"></i> Laravel PHP</li>
-                        <li class="text-gray-400 text-sm"><i class="fas fa-link text-[#8B0000] mr-2"></i> SHA-256 Blockchain</li>
-                        <li class="text-gray-400 text-sm"><i class="fas fa-fingerprint text-[#8B0000] mr-2"></i> Biometric Verification</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-[#8B0000] font-semibold mb-3">Connect</h3>
-                    <div class="flex gap-3">
-                        <a href="#" class="social-icon w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#8B0000] transition"><i class="fab fa-facebook-f text-gray-400 text-sm"></i></a>
-                        <a href="#" class="social-icon w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#8B0000] transition"><i class="fab fa-twitter text-gray-400 text-sm"></i></a>
-                        <a href="#" class="social-icon w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#8B0000] transition"><i class="fab fa-linkedin-in text-gray-400 text-sm"></i></a>
-                        <a href="#" class="social-icon w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#8B0000] transition"><i class="fab fa-instagram text-gray-400 text-sm"></i></a>
-                    </div>
-                    <p class="text-gray-400 text-sm mt-3">Kansanga, Kampala, Uganda</p>
-                    <p class="text-gray-400 text-sm">voting@iuea.ac.ug</p>
-                </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Footer Links Row -->
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-6">
+                <a href="privacy.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Privacy Policy</a>
+                <a href="terms.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Terms of Service</a>
+                <a href="blockchain.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Blockchain Verification</a>
+                <a href="faq.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">FAQ</a>
+                <a href="contact.html" class="text-gray-400 hover:text-[#8B0000] text-sm transition">Contact</a>
             </div>
-            <div class="border-t border-gray-700 pt-6 text-center">
-                <p class="text-gray-500 text-sm">&copy; 2026 International University of East Africa. All rights reserved. | Learning to Succeed</p>
-                <p class="text-gray-600 text-xs mt-1">Powered by Laravel | Blockchain SHA-256 | Biometric Verification</p>
+            
+            <!-- Logo and Credit Row -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-700">
+                <div class="flex items-center gap-3">
+                    <img src="images/iuea-logo.png" alt="IUEA Logo" class="h-8 w-auto">
+                    <span class="text-gray-500 text-xs">| Learning to Succeed</span>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500 text-xs">Created by <span class="text-[#8B0000]">Marube</span></p>
+                    <p class="text-gray-600 text-xs mt-1">&copy; 2026 International University of East Africa. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </footer>
