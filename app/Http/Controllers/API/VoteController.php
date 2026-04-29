@@ -28,9 +28,9 @@ class VoteController extends Controller
             $formatted[$sector] = $candidateList->map(function($candidate) {
                 $photoUrl = null;
                 if ($candidate->photo_filename) {
-                    $photoUrl = asset('storage/' . $candidate->photo_filename);
+                    $photoUrl = Storage::disk('public')->url($candidate->photo_filename);
                 } elseif ($candidate->photo_path) {
-                    $photoUrl = Storage::url($candidate->photo_path);
+                    $photoUrl = Storage::disk('public')->url($candidate->photo_path);
                 }
                 
                 return [

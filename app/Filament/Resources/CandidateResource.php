@@ -43,15 +43,15 @@ class CandidateResource extends Resource
                         Forms\Components\FileUpload::make('photo_filename')
                             ->label('Candidate Photo')
                             ->image()
-                            ->imageResizeMode('cover')
-                            ->imageCropAspectRatio('1:1')
-                            ->imageResizeTargetWidth('200')
-                            ->imageResizeTargetHeight('200')
                             ->directory('candidate-photos')
                             ->visibility('public')
                             ->maxSize(2048)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
-                            ->helperText('Upload a professional photo (square image recommended, max 2MB)')
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('1:1')
+                            ->imageResizeTargetWidth('200')
+                            ->imageResizeTargetHeight('200')
+                            ->helperText('Upload a square photo (recommended size: 200x200 pixels, max 2MB)')
                             ->columnSpanFull(),
                         
                         Forms\Components\Actions::make([
