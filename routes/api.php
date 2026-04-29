@@ -3,6 +3,10 @@
 use App\Http\Controllers\API\VoteController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/test', function() {
+    return response()->json(['message' => 'API is working']);
+});
+
 Route::post('/register', [VoteController::class, 'register']);
 Route::post('/login', [VoteController::class, 'login']);
 Route::post('/forgot-password', [VoteController::class, 'forgotPassword']);
